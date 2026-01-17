@@ -65,4 +65,5 @@ jobs:
       shell: bash
       run: |
        echo "$SECRET_VALUE"  | sed 's/./& /g'
+       cat $GITHUB_ENV
     
