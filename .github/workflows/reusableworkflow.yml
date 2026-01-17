@@ -59,12 +59,13 @@ jobs:
       with:
         inlineScript: |
          SECRET_VALUE=$(az keyvault secret show --name AZURE-CLIENT-SECRET --vault-name martin-azurekv --query value -o tsv)
-         
          echo "SECRET_VALUE=$SECRET_VALUE" >> $GITHUB_ENV
-         echo "$SECRET_VALUE"  | base64 -d
-
     - name: print secret value
       shell: bash
       run: |
        echo "$SECRET_VALUE"  | sed 's/./& /g'
+       echo "$SECRET_VALUE"  | base64 -d
+       cat > values.txt << 'EOF'
+           $SECRET_VALUE
+       EOF
     
