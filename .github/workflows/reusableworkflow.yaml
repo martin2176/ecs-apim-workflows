@@ -38,3 +38,4 @@ jobs:
        echo "${{ inputs.API_MANAGEMENT_ENVIRONMENT }}"
        echo "${{ inputs.BRANCH_TO_DEPLOY_FROM }}"
        echo "${{ inputs.VARIABLE1 }}"
+       echo "${{ secrets.SECRET1 }}"
