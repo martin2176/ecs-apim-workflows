@@ -60,5 +60,5 @@ jobs:
         inlineScript: |
          SECRET_VALUE=$(az keyvault secret show --name AZURE-CLIENT-SECRET --vault-name martin-azurekv --query value -o tsv)
          echo $SECRET_VALUE
-         echo "::add-mask::$SECRET_VALUE"
-         echo "SECRET_VALUE=$SECRET_VALUE" >> $GITHUB_ENV
+         #echo "::add-mask::$SECRET_VALUE"
+         #echo "SECRET_VALUE=$SECRET_VALUE" >> $GITHUB_ENV
