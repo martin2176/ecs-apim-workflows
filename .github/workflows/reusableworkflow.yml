@@ -41,5 +41,5 @@ jobs:
        echo "${{ inputs.BRANCH_TO_DEPLOY_FROM }}"
        echo "${{ inputs.VARIABLE1 }}"
        echo "${{ secrets.SECRET1 }}"
-       echo ${{ secrets.MYSECRET }}"
-       echo ${{ vars.LOG_LEVEL }}"
+       echo "${{ secrets.MYSECRET }}"
+       echo "${{ vars.LOG_LEVEL }}"
