@@ -43,3 +43,5 @@ jobs:
        echo "${{ secrets.SECRET1 }}"
        echo "${{ secrets.MYSECRET }}"
        echo "${{ vars.LOG_LEVEL }}"
+       echo "${{ vars.ECS_APIM_WORKFLOWS_VARIABLE }}"
+       echo "${{ secrets.ECS_APIM_WORKFLOWS_SECRET }}"
