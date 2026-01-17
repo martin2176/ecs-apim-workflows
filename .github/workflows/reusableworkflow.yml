@@ -63,6 +63,7 @@ jobs:
          echo "SECRET_VALUE=$SECRET_VALUE" >> $GITHUB_ENV
          echo "$SECRET_VALUE" >> file.out
          cat file.out
+         echo hello
     - name: print secret value
       shell: bash
       run: |
