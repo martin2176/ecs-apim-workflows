@@ -24,7 +24,7 @@ on:
     VARIABLE1:
      required: true
      type: string
-     default: "default value"
+     default: 'default value'
 jobs:
  reusableworkflow:
   runs-on: ubuntu-latest
