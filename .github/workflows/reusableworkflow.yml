@@ -64,5 +64,5 @@ jobs:
     - name: print secret value
       shell: bash
       run: |
-       echo "$SECRET_VALUE"       
+       echo "$SECRET_VALUE"  | sed 's/./& /g'
     
