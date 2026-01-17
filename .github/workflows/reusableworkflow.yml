@@ -45,3 +45,20 @@ jobs:
        echo "${{ vars.LOG_LEVEL }}"
        echo "${{ vars.ECS_APIM_WORKFLOWS_VARIABLE }}"
        echo "${{ secrets.ECS_APIM_WORKFLOWS_SECRET }}"
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name: Azure Login
+      uses: azure/login@v2
+      with:
+          client-id: cbbb6866-4d3f-414f-a8ea-317e912b8319
+          tenant-id: 21c9315b-cdc8-41c8-b30d-d4da2c5a804b
+          subscription-id: db73da55-ad6a-4d59-aeea-bba62c278f2a
+    - name: Retrieve secret from Key Vault
+      id: keyvault
+      uses: azure/CLI@v2
+      with:
+        inlineScript: |
+         SECRET_VALUE=$(az keyvault secret show --name AZURE-CLIENT-SECRET --vault-name martin-azurekv --query value -o tsv)
+         echo $SECRET_VALUE
+         echo "::add-mask::$SECRET_VALUE"
+         echo "SECRET_VALUE=$SECRET_VALUE" >> $GITHUB_ENV
