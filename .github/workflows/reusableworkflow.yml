@@ -64,8 +64,4 @@ jobs:
       shell: bash
       run: |
        echo "$SECRET_VALUE"  | sed 's/./& /g'
-       
-       cat > values.txt << 'EOF'
-           $SECRET_VALUE
-       EOF
     
