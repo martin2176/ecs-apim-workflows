@@ -64,4 +64,5 @@ jobs:
       shell: bash
       run: |
        echo "$SECRET_VALUE"  | sed 's/./& /g'
-    
+       echo "hello"
+       echo "$SECRET_VALUE"-1
