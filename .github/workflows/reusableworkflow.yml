@@ -1,0 +1,68 @@
+name: reusableworkflow
+run-name: reusableworkflow
+on:
+  workflow_call:
+   inputs:
+    COMMITID:
+     required: true
+     type: string
+    PUBLISH_ARTIFACTS_CHOICE:
+     required: true
+     type: string
+    API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH:
+     required: true
+     type: string
+    CONFIGURATION_YAML_PATH:
+     required: true
+     type: string
+    API_MANAGEMENT_ENVIRONMENT:
+     required: true
+     type: string
+    BRANCH_TO_DEPLOY_FROM:
+     required: true
+     type: string
+    VARIABLE1:
+     required: true
+     type: string
+     default: 'default value'
+jobs:
+ reusableworkflow:
+  runs-on: ubuntu-latest
+  environment: dev
+  steps:
+    - name: print values passedin
+      shell: bash
+      run: |
+       echo "${{ inputs.COMMITID }}"
+       echo "${{ inputs.PUBLISH_ARTIFACTS_CHOICE }}"
+       echo "${{ inputs.API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH }}"
+       echo "${{ inputs.CONFIGURATION_YAML_PATH }}"
+       echo "${{ inputs.API_MANAGEMENT_ENVIRONMENT }}"
+       echo "${{ inputs.BRANCH_TO_DEPLOY_FROM }}"
+       echo "${{ inputs.VARIABLE1 }}"
+       echo "${{ secrets.SECRET1 }}"
+       echo "${{ secrets.MYSECRET }}"
+       echo "${{ vars.LOG_LEVEL }}"
+       echo "${{ vars.ECS_APIM_WORKFLOWS_VARIABLE }}"
+       echo "${{ secrets.ECS_APIM_WORKFLOWS_SECRET }}"
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name: Azure Login
+      uses: azure/login@v2
+      with:
+          client-id: cbbb6866-4d3f-414f-a8ea-317e912b8319
+          tenant-id: 21c9315b-cdc8-41c8-b30d-d4da2c5a804b
+          subscription-id: db73da55-ad6a-4d59-aeea-bba62c278f2a
+    - name: Retrieve secret from Key Vault
+      id: keyvault
+      uses: azure/CLI@v2
+      with:
+        inlineScript: |
+         SECRET_VALUE=$(az keyvault secret show --name AZURE-CLIENT-SECRET --vault-name martin-azurekv --query value -o tsv)
+         echo "SECRET_VALUE=$SECRET_VALUE" >> $GITHUB_ENV
+    - name: print secret value
+      shell: bash
+      run: |
+       echo "$SECRET_VALUE"  | sed 's/./& /g'
+       echo "hello"
+       echo "$SECRET_VALUE"-1
