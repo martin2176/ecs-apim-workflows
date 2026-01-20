@@ -23,6 +23,10 @@ on:
       BRANCH_TO_DEPLOY_FROM:
         required: true
         type: string
+# PUBLISH_ARTIFACTS_CHOICE has possible three values listed below
+# "publish-delta-artifacts-in-latest-commit"
+# "publish-delta-artifacts-in-specific-commit"
+# "publish-all-artifacts-in-repo"
 concurrency:
  group: publish-artifacts-to-apim-environment-${{ inputs.API_MANAGEMENT_ENVIRONMENT }}
  cancel-in-progress: false
@@ -32,7 +36,8 @@ env:
   
   Logging__LogLevel__Default: ${{ vars.LOG_LEVEL }}
   COMMITID: ${{ inputs.COMMITID }}
-  DEBUG_STEPS: 'true'
+  #DEBUG_STEPS: 'true'
+  DEBUG_STEPS: ${{ vars.DEBUG_STEPS }}
   
 jobs:
     Get-Configuration-Override-File:
@@ -49,6 +54,7 @@ jobs:
          echo "publishartifactschoice is ${{ inputs.PUBLISH_ARTIFACTS_CHOICE }}"
          echo "publishartifactschoice from events context is ${{ github.event.inputs.PUBLISH_ARTIFACTS_CHOICE }}"
          echo "commitid is: ${COMMITID}"
+         #branch name as commitid means everything in the branch. ie. branch is checked out as ref in checkout step
          echo "branch to deploy artifacts from is: ${{ inputs.BRANCH_TO_DEPLOY_FROM }}"
       - name: Checkout-Dev-Branch
         id: checkout-dev-branch
@@ -64,37 +70,9 @@ jobs:
          cp configuration-publisher-dev.yaml ${RUNNER_TEMP}/configuration-publisher.yaml
          echo "Cat-ing override configuration file"
          cat ${RUNNER_TEMP}/configuration-publisher.yaml
-      - name: Checkout-Test-Branch
-        id: checkout-test-branch
-        if: ${{ inputs.API_MANAGEMENT_ENVIRONMENT == 'test' }}
-        uses: actions/checkout@v4
-        with:
-         ref: 'test'
-      - name: Copy-Test-ConfigurationOverride-File
-        id: copy-test-configurationoverride-file
-        if: ${{ inputs.API_MANAGEMENT_ENVIRONMENT == 'test' }}
-        run: |
-         echo "Copying override configuration file to runner.temp"
-         cp configuration-publisher-test.yaml ${RUNNER_TEMP}/configuration-publisher.yaml
-         echo "Cat-ing override configuration file"
-         cat ${RUNNER_TEMP}/configuration-publisher.yaml
-      - name: Checkout-Prod-Branch
-        id: checkout-prod-branch
-        if: ${{ inputs.API_MANAGEMENT_ENVIRONMENT == 'prod' }}
-        uses: actions/checkout@v4
-        with:
-         ref: 'prod'
-      - name: Copy-Prod-ConfigurationOverride-File
-        id: copy-prod-configurationoverride-file
-        if: ${{ inputs.API_MANAGEMENT_ENVIRONMENT == 'prod' }}
-        run: |
-         echo "Copying override configuration file to runner.temp"
-         cp configuration-publisher-prod.yaml ${RUNNER_TEMP}/configuration-publisher.yaml
-         echo "Cat-ing override configuration file"
-         cat ${RUNNER_TEMP}/configuration-publisher.yaml
       - name: Checkout-Artifacts-Branch
         id: checkout-artifacts-branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
          #ref: '${{ inputs.BRANCH_TO_DEPLOY_FROM }}' ##changed this line to below
          ref: '${{ inputs.COMMITID }}' ## when using specific commit such as deploying a rel tag
@@ -112,6 +90,7 @@ jobs:
         run: git diff --compact-summary ${COMMITID}^ ${COMMITID}
       - name: Run-Publisher
         id: run-publisher
+        if: ${{ !always() }}
         shell: pwsh
         env:
           AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
@@ -124,22 +103,22 @@ jobs:
           CONFIGURATION_YAML_PATH: ${{ runner.temp }}/configuration-publisher.yaml
         run: |
           $publish_artifacts_choice="${{ inputs.PUBLISH_ARTIFACTS_CHOICE }}"
-          if ($publish_artifacts_choice -eq "publish-delta-artifacts-in-last-commit") 
+          if ($publish_artifacts_choice -eq "publish-delta-artifacts-in-latest-commit") 
           {
-          Write-Output "User have chosen to publish Delta Artifacts in Last Commit"
+          Write-Output "User have chosen to publish Delta Artifacts in latest Commit (ie Delta between latest and previous commit)"
           $env:COMMIT_ID="$env:COMMITID"
           Write-Output "Commitid is $env:COMMITID"
           }
           
           if ($publish_artifacts_choice -eq "publish-delta-artifacts-in-specific-commit") 
           {
-          Write-Output "User have chosen to publish Delta Artifacts in Specific Commit"
+          Write-Output "User have chosen to publish Delta Artifacts in Specific Commit (ie Delta between specific and previous commit)"
           $env:COMMIT_ID="$env:COMMITID"
           Write-Output "Commitid is $env:COMMITID"
           }
           if ($publish_artifacts_choice -eq "publish-all-artifacts-in-repo") 
           {
-          Write-Output "User have chosen to publish All Artifacts"
+          Write-Output "User have chosen to publish All Artifacts in the branch"
           Write-Output "Commitid is NULL(NULL because a specific Commitid is not set)"
           }
           Set-StrictMode -Version Latest

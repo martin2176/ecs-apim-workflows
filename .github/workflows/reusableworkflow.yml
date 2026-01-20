@@ -21,10 +21,6 @@ on:
     BRANCH_TO_DEPLOY_FROM:
      required: true
      type: string
-    VARIABLE1:
-     required: true
-     type: string
-     default: 'default value'
 jobs:
  reusableworkflow:
   runs-on: ubuntu-latest
@@ -39,8 +35,6 @@ jobs:
        echo "${{ inputs.CONFIGURATION_YAML_PATH }}"
        echo "${{ inputs.API_MANAGEMENT_ENVIRONMENT }}"
        echo "${{ inputs.BRANCH_TO_DEPLOY_FROM }}"
-       echo "${{ inputs.VARIABLE1 }}"
-       echo "${{ secrets.SECRET1 }}"
        echo "${{ secrets.MYSECRET }}"
        echo "${{ vars.LOG_LEVEL }}"
        echo "${{ vars.ECS_APIM_WORKFLOWS_VARIABLE }}"
