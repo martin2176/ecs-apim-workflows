@@ -87,11 +87,15 @@ jobs:
       - name: List-All-Artifacts-Files-Captured-In-the-Commit
         id: list-all-artifact-files-changes-captured-in-the-commit
         if: ${{ env.DEBUG_STEPS == 'true' && inputs.PUBLISH_ARTIFACTS_CHOICE == 'publish-all-artifacts-in-repo' }}
-        run: git ls-tree -r --name-only ${COMMITID}
+        run: |
+         echo "Listing all files in the repo"
+         git ls-tree -r --name-only ${COMMITID}
       - name: List-Delta-Artifacts-Files-Captured-In-the-Commit
         id: list-delta-artifact-files-changes-captured-in-the-commit
         if: ${{ env.DEBUG_STEPS == 'true' && (inputs.PUBLISH_ARTIFACTS_CHOICE == 'publish-delta-artifacts-in-latest-commit' || inputs.PUBLISH_ARTIFACTS_CHOICE == 'publish-delta-artifacts-in-specific-commit') }}
-        run:  git diff --compact-summary --name-status -B -M -C ${COMMITID}^ ${COMMITID}
+        run:  |
+         echo "Listing files changed in the commit"
+         git diff --compact-summary --name-status -B -M -C ${COMMITID}^ ${COMMITID}
         #run: git diff --compact-summary ${COMMITID}^ ${COMMITID}
       - name: Run-Publisher
         id: run-publisher
