@@ -67,12 +67,13 @@ jobs:
         if: ${{ inputs.API_MANAGEMENT_ENVIRONMENT == 'dev' }}
         run: |
          echo "Copying override configuration file to runner.temp"
-         cp ${{ inputs.CONFIGURATION_YAML_PATH }} ${RUNNER_TEMP}/configuration-publisher.yml
-         echo "Cat-ing override configuration file"
-         cat ${RUNNER_TEMP}/configuration-publisher.yml
-         echo "-----------------------"
+         #cp ${{ inputs.CONFIGURATION_YAML_PATH }} ${RUNNER_TEMP}/configuration-publisher.yml
+         #echo "Cat-ing override configuration file"
+         #cat ${RUNNER_TEMP}/configuration-publisher.yml
+         rm -f ${{ inputs.CONFIGURATION_YAML_PATH }}
+         #echo "-----------------------"
          [ -f "${{ inputs.CONFIGURATION_YAML_PATH }}" ] && echo "File exists."; echo "Cat-ing override configuration file";cat ${RUNNER_TEMP}/configuration-publisher.yml || echo "File does not exist.Copying an empty file"; cp /dev/null ${RUNNER_TEMP}/configuration-publisher.yml
-         echo "-----------------------"
+         #echo "-----------------------"
       - name: Checkout-Artifacts-Branch
         id: checkout-artifacts-branch
         uses: actions/checkout@v6
