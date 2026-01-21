@@ -99,7 +99,7 @@ jobs:
         #run: git diff --compact-summary ${COMMITID}^ ${COMMITID}
       - name: Run-Publisher
         id: run-publisher
-        if: ${{ !always() }}
+        if: ${{ always() }}
         shell: pwsh
         env:
           AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
