@@ -70,6 +70,7 @@ jobs:
          #cp ${{ inputs.CONFIGURATION_YAML_PATH }} ${RUNNER_TEMP}/configuration-publisher.yml
          #echo "Cat-ing override configuration file"
          #cat ${RUNNER_TEMP}/configuration-publisher.yml
+         rm -f "${{ inputs.CONFIGURATION_YAML_PATH }}"
          [ -f "${{ inputs.CONFIGURATION_YAML_PATH }}" ] && echo "File exists.Cat-ing override configuration file";cp ${{ inputs.CONFIGURATION_YAML_PATH }} ${RUNNER_TEMP}/configuration-publisher.yml;cat ${RUNNER_TEMP}/configuration-publisher.yml || echo "File does not exist.Copying an empty file"; cp /dev/null ${RUNNER_TEMP}/configuration-publisher.yml
          
       - name: Checkout-Artifacts-Branch
