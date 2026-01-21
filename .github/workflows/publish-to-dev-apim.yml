@@ -71,7 +71,7 @@ jobs:
          echo "Cat-ing override configuration file"
          cat ${RUNNER_TEMP}/configuration-publisher.yml
          echo "-----------------------"
-         [ -f "${{ inputs.CONFIGURATION_YAML_PATH }}" ] && echo "File exists."; echo "Cat-ing override configuration file";cat $FILE_PATH || echo "File does not exist.Copying an empty file"; cp /dev/null ${RUNNER_TEMP}/configuration-publisher.yml
+         [ -f "${{ inputs.CONFIGURATION_YAML_PATH }}" ] && echo "File exists."; echo "Cat-ing override configuration file";cat ${RUNNER_TEMP}/configuration-publisher.yml || echo "File does not exist.Copying an empty file"; cp /dev/null ${RUNNER_TEMP}/configuration-publisher.yml
          echo "-----------------------"
       - name: Checkout-Artifacts-Branch
         id: checkout-artifacts-branch
