@@ -70,6 +70,7 @@ jobs:
          #cp ${{ inputs.CONFIGURATION_YAML_PATH }} ${RUNNER_TEMP}/configuration-publisher.yml
          #echo "Cat-ing override configuration file"
          #cat ${RUNNER_TEMP}/configuration-publisher.yml
+         rm -f ${{ inputs.CONFIGURATION_YAML_PATH }}
          if [ -f "${{ inputs.CONFIGURATION_YAML_PATH }}" ]
           then
            echo "File exists.Cat-ing override configuration file"
