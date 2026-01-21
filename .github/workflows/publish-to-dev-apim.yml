@@ -67,9 +67,9 @@ jobs:
         if: ${{ inputs.API_MANAGEMENT_ENVIRONMENT == 'dev' }}
         run: |
          echo "Copying override configuration file to runner.temp"
-         cp configuration-publisher-dev.yaml ${RUNNER_TEMP}/configuration-publisher.yaml
+         cp configuration-publisher-dev.yml ${RUNNER_TEMP}/configuration-publisher.yml
          echo "Cat-ing override configuration file"
-         cat ${RUNNER_TEMP}/configuration-publisher.yaml
+         cat ${RUNNER_TEMP}/configuration-publisher.yml
       - name: Checkout-Artifacts-Branch
         id: checkout-artifacts-branch
         uses: actions/checkout@v6
@@ -100,7 +100,7 @@ jobs:
           AZURE_RESOURCE_GROUP_NAME: ${{ secrets.AZURE_RESOURCE_GROUP_NAME }}
           API_MANAGEMENT_SERVICE_NAME: ${{ secrets.API_MANAGEMENT_SERVICE_NAME }}
           API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH: ${{ GITHUB.WORKSPACE }}/${{ inputs.API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH }}
-          CONFIGURATION_YAML_PATH: ${{ runner.temp }}/configuration-publisher.yaml
+          CONFIGURATION_YAML_PATH: ${{ runner.temp }}/configuration-publisher.yml
         run: |
           $publish_artifacts_choice="${{ inputs.PUBLISH_ARTIFACTS_CHOICE }}"
           if ($publish_artifacts_choice -eq "publish-delta-artifacts-in-latest-commit") 
