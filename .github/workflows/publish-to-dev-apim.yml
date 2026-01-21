@@ -70,10 +70,8 @@ jobs:
          #cp ${{ inputs.CONFIGURATION_YAML_PATH }} ${RUNNER_TEMP}/configuration-publisher.yml
          #echo "Cat-ing override configuration file"
          #cat ${RUNNER_TEMP}/configuration-publisher.yml
-         rm -f ${{ inputs.CONFIGURATION_YAML_PATH }}
-         #echo "-----------------------"
          [ -f "${{ inputs.CONFIGURATION_YAML_PATH }}" ] && echo "File exists."; echo "Cat-ing override configuration file";cat ${RUNNER_TEMP}/configuration-publisher.yml || echo "File does not exist.Copying an empty file"; cp /dev/null ${RUNNER_TEMP}/configuration-publisher.yml
-         #echo "-----------------------"
+         
       - name: Checkout-Artifacts-Branch
         id: checkout-artifacts-branch
         uses: actions/checkout@v6
@@ -103,7 +101,7 @@ jobs:
         #run: git diff --compact-summary ${COMMITID}^ ${COMMITID}
       - name: Run-Publisher
         id: run-publisher
-        if: ${{ !always() }}
+        if: ${{ always() }}
         shell: pwsh
         env:
           AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
