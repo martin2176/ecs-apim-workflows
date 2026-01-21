@@ -80,14 +80,19 @@ jobs:
          fetch-depth: 50
       - name: List-Top-Level-Contents-Of-Artifacts-Folder
         id: list-top-level-contents-of-artifacts-folder
-        if: ${{ env.DEBUG_STEPS }} == 'true'
+        if: ${{ env.DEBUG_STEPS == 'true' }}
         run: |
          echo "Listing the top level artifact directories"
          ls -al ${{ GITHUB.WORKSPACE }}/${{ inputs.API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH }} || true 
-      - name: List-Artifacts-Files-Captured-In-the-Commit
-        id: list-artifact-files-changes-captured-in-the-commit
-        if: ${{ env.DEBUG_STEPS }} == 'true'
-        run: git diff --compact-summary ${COMMITID}^ ${COMMITID}
+      - name: List-All-Artifacts-Files-Captured-In-the-Commit
+        id: list-all-artifact-files-changes-captured-in-the-commit
+        if: ${{ env.DEBUG_STEPS == 'true' && inputs.PUBLISH_ARTIFACTS_CHOICE == 'publish-all-artifacts-in-repo' }}
+        run: git ls-tree -r --name-only ${COMMITID}
+      - name: List-Delta-Artifacts-Files-Captured-In-the-Commit
+        id: list-delta-artifact-files-changes-captured-in-the-commit
+        if: ${{ env.DEBUG_STEPS == 'true' && (inputs.PUBLISH_ARTIFACTS_CHOICE == 'publish-delta-artifacts-in-latest-commit' || inputs.PUBLISH_ARTIFACTS_CHOICE == 'publish-delta-artifacts-in-specific-commit') }}
+        run:  git diff --compact-summary --name-status -B -M -C ${COMMITID}^ ${COMMITID}
+        #run: git diff --compact-summary ${COMMITID}^ ${COMMITID}
       - name: Run-Publisher
         id: run-publisher
         if: ${{ !always() }}
