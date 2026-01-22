@@ -55,6 +55,13 @@ jobs:
         uses: actions/checkout@v6
         with:
          ref: '${{ inputs.REFTOCHECKOUTFOR_EXTRACTORCONFIG }}'
+      - name: printoutout
+        shell: bash
+        run: |
+         echo "${{ inputs.CONFIGURATION_YAML_PATH }}"
+         echo ${{ github.event.inputs.CONFIGURATION_YAML_PATH }}
+         echo ${{ env.CONFIGURATION_EXTRACTOR_YAML }}
+         echo $CONFIGURATION_EXTRACTOR_YAML
       - name: Run-Extractor
         id: Run-Extractor
         env:
