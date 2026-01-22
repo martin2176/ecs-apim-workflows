@@ -60,6 +60,8 @@ jobs:
         run: |
          echo "${{ inputs.CONFIGURATION_YAML_PATH }}"
          echo ${{ github.event.inputs.CONFIGURATION_YAML_PATH }}
+         echo "${{ github.event.inputs.HEAD_BRANCH_FOR_PR }}"
+         echo ${{ github.event.inputs.HEAD_BRANCH_FOR_PR }}
          echo ${{ env.CONFIGURATION_EXTRACTOR_YAML }}
          echo $CONFIGURATION_EXTRACTOR_YAML
       - name: Run-Extractor
