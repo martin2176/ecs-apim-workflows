@@ -1,0 +1,51 @@
+#Reusable workflow to publish artifacts to Dev APIM instance
+name: Publish-Artifacts-to-Dev-APIM
+run-name: Publish-Artifacts-to-Dev-APIM
+#Author martin francis kallukalam
+on:
+  workflow_call:
+    inputs:
+      EXTRACTOR_OPTION:
+        required: true
+        type: string
+      API_SPECIFICATION_FORMAT:
+        required: true
+        type: string
+      REFERENCE_NUMBER:
+        required: true
+        type: string
+      BRANCH_TO_EXTRACT_ARTIFACTS:
+        required: true
+        type: string
+      REFTOCHECKOUTFOR_EXTRACTORCONFIG:
+        required: true
+        type: string
+      PULL_REQUEST_LABEL:
+        required: true
+        type: string
+      BASE_BRANCH_FOR_PR:
+        required: true
+        type: string
+      HEAD_BRANCH_FOR_PR:
+        required: true
+        type: string
+      PR_REQUIRED:
+        required: true
+        type: string
+concurrency:
+ group: extract-from-dev-apim-instance
+ cancel-in-progress: false
+
+env:
+  apiops_release_version: v7.0.0-alpha.3.0.1
+  Logging__LogLevel__Default: ${{ vars.LOG_LEVEL }}
+  DEBUG_STEPS: ${{ vars.DEBUG_STEPS }}
+jobs:
+  test:
+   name: test
+   runs-on: ubuntu-latest
+   steps:
+   - name: print-user-selections
+     id: print-user-selections
+     run: |
+       echo "Extractor Options: ${{ inputs.EXTRACTOR_OPTION }}"
