@@ -55,7 +55,6 @@ jobs:
          echo "configurationyamlpath is ${{ inputs.CONFIGURATION_YAML_PATH }}"
          echo "apimanagementserviceoutputfolderpath is ${{ inputs.API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH }}"
          echo "publishartifactschoice is ${{ inputs.PUBLISH_ARTIFACTS_CHOICE }}"
-         echo "publishartifactschoice from events context is ${{ github.event.inputs.PUBLISH_ARTIFACTS_CHOICE }}"
          echo "commitid is: ${COMMITID}"
          #branch name as commitid means everything in the branch. ie. branch is checked out as ref in checkout step
          echo "branch to deploy artifacts from is: ${{ inputs.BRANCH_TO_DEPLOY_FROM }}"
