@@ -41,11 +41,13 @@ env:
   Logging__LogLevel__Default: ${{ vars.LOG_LEVEL }}
   DEBUG_STEPS: ${{ vars.DEBUG_STEPS }}
 jobs:
-  test:
-   name: test
-   runs-on: ubuntu-latest
-   steps:
-   - name: print-user-selections
-     id: print-user-selections
-     run: |
-       echo "Extractor Options: ${{ inputs.EXTRACTOR_OPTION }}"
+  Extract-Artifacts:
+    name: Extract-Artifacts
+    runs-on: ubuntu-latest
+    environment:  ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}
+    steps:
+      - name: Checkout-Configuration-File
+        id: Checkout-Configuration-File
+        uses: actions/checkout@v6
+        with:
+         ref: '${{ inputs.REFTOCHECKOUTFOR_EXTRACTORCONFIG }}'
