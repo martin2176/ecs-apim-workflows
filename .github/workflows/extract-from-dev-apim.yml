@@ -1,6 +1,6 @@
-#Reusable workflow to publish artifacts to Dev APIM instance
-name: Publish-Artifacts-to-Dev-APIM
-run-name: Publish-Artifacts-to-Dev-APIM
+#Reusable workflow to extract artifacts from Dev APIM instance
+name: Extract-Artifacts-from-Dev-APIM
+run-name: Extract-Artifacts-from-Dev-APIM
 #Author martin francis kallukalam
 on:
   workflow_call:
@@ -33,7 +33,7 @@ on:
         required: true
         type: string
 concurrency:
- group: extract-from-dev-apim-instance
+ group: extract-artifacts-from-dev-apim
  cancel-in-progress: false
 
 env:
