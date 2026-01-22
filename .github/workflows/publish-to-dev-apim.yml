@@ -23,6 +23,9 @@ on:
       BRANCH_TO_DEPLOY_FROM:
         required: true
         type: string
+      REFTOCHECKOUTFOR_PUBLISHERCONFIG:
+        required: true
+        type: string
 # PUBLISH_ARTIFACTS_CHOICE has possible three values listed below
 # "publish-delta-artifacts-in-latest-commit"
 # "publish-delta-artifacts-in-specific-commit"
@@ -61,7 +64,7 @@ jobs:
         if: ${{ inputs.API_MANAGEMENT_ENVIRONMENT == 'dev' }}
         uses: actions/checkout@v4
         with:
-         ref: 'dev'
+         ref: '${{ inputs.REFTOCHECKOUTFOR_PUBLISHERCONFIG }}'
       - name: Copy-ConfigurationOverride-File
         id: copy-configurationoverride-file
         if: ${{ inputs.API_MANAGEMENT_ENVIRONMENT == 'dev' }}
