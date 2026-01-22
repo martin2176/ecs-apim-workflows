@@ -44,6 +44,8 @@ env:
   Logging__LogLevel__Default: ${{ vars.LOG_LEVEL }}
   DEBUG_STEPS: ${{ vars.DEBUG_STEPS }}
   CONFIGURATION_EXTRACTOR_YAML: ${{ inputs.CONFIGURATION_YAML_PATH }}
+  HEAD_BRANCH_FOR_PR: ${{ inputs.HEAD_BRANCH_FOR_PR }}
+  BASE_BRANCH_FOR_PR: ${{ inputs.BASE_BRANCH_FOR_PR }}
 jobs:
   Extract-Artifacts:
     name: Extract-Artifacts
