@@ -75,6 +75,8 @@ jobs:
           Write-Output "User have chosen to extract Selected APIM Artifacts"
           echo "Copying extractor configuration file to runner.temp"
           #copy configuration-extractor.yaml $env:RUNNER_TEMP
+          Write-Output "Configuration yaml path is ${{ env.CONFIGURATION_EXTRACTOR_YAML }}"
+          Write-Output "Configuration yaml path is ${{ github.event.inputs.CONFIGURATION_YAML_PATH }}"
           copy ${{ env.CONFIGURATION_EXTRACTOR_YAML }} $env:RUNNER_TEMP/configuration-extractor.yaml
           $env:CONFIGURATION_YAML_PATH="$env:RUNNER_TEMP/configuration-extractor.yaml"
           Write-Output "Configuration yaml path is $env:CONFIGURATION_YAML_PATH"
