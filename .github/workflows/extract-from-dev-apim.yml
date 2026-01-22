@@ -26,6 +26,12 @@ on:
       HEAD_BRANCH_FOR_PR:
         required: true
         type: string
+      CONFIGURATION_YAML_PATH:
+        required: true
+        type: string
+      API_MANAGEMENT_ENVIRONMENT:
+        required: true
+        type: string
 concurrency:
  group: extract-artifacts-from-dev-apim
  cancel-in-progress: false
