@@ -78,6 +78,12 @@ jobs:
            echo "File does not exist.Copying an empty file"
            cp /dev/null ${RUNNER_TEMP}/configuration-publisher.yml
          fi
+         echo "_________"
+         echo ${RUNNER_TEMP}
+         echo ${{ runner.temp }}
+         echo ${{ runner.temp }}/configuration-publisher.yml 
+         echo "_________"
+         
       - name: Checkout-Artifacts-Branch
         id: checkout-artifacts-branch
         uses: actions/checkout@v6
