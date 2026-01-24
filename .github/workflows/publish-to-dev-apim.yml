@@ -37,7 +37,6 @@ concurrency:
 
 env:
   apiops_release_version: v7.0.0-alpha.3.0.1
-  
   Logging__LogLevel__Default: ${{ vars.LOG_LEVEL }}
   COMMITID: ${{ inputs.COMMITID }}
   DEBUG_STEPS: ${{ vars.DEBUG_STEPS }}
@@ -78,12 +77,7 @@ jobs:
            echo "File does not exist.Copying an empty file"
            cp /dev/null ${RUNNER_TEMP}/configuration-publisher.yml
          fi
-         echo "_________"
-         echo ${RUNNER_TEMP}
-         echo ${{ runner.temp }}
-         echo ${{ runner.temp }}/configuration-publisher.yml 
-         echo "_________"
-         
+         echo "Configuration override file location is:  ${{ runner.temp }}/configuration-publisher.yml"
       - name: Checkout-Artifacts-Branch
         id: checkout-artifacts-branch
         uses: actions/checkout@v6
