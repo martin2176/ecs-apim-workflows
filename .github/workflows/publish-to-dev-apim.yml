@@ -29,7 +29,8 @@ on:
 # PUBLISH_ARTIFACTS_CHOICE has possible three values listed below
 # "publish-delta-artifacts-in-latest-commit"
 # "publish-delta-artifacts-in-specific-commit"
-# "publish-all-artifacts-in-repo"
+# "publish-all-artifacts-in-repo-to-latest-commit"
+# "publish-all-artifacts-in-repo-to-specific-commit"
 concurrency:
  group: publish-artifacts-to-apim-environment-${{ inputs.API_MANAGEMENT_ENVIRONMENT }}
  cancel-in-progress: false
@@ -39,7 +40,6 @@ env:
   
   Logging__LogLevel__Default: ${{ vars.LOG_LEVEL }}
   COMMITID: ${{ inputs.COMMITID }}
-  #DEBUG_STEPS: 'true'
   DEBUG_STEPS: ${{ vars.DEBUG_STEPS }}
   
 jobs:
@@ -69,10 +69,6 @@ jobs:
         if: ${{ inputs.API_MANAGEMENT_ENVIRONMENT == 'dev' }}
         run: |
          echo "Copying override configuration file to runner.temp"
-         #cp ${{ inputs.CONFIGURATION_YAML_PATH }} ${RUNNER_TEMP}/configuration-publisher.yml
-         #echo "Cat-ing override configuration file"
-         #cat ${RUNNER_TEMP}/configuration-publisher.yml
-         
          if [ -f "${{ inputs.CONFIGURATION_YAML_PATH }}" ]
           then
            echo "File exists.Cat-ing override configuration file"
@@ -86,8 +82,7 @@ jobs:
         id: checkout-artifacts-branch
         uses: actions/checkout@v6
         with:
-         #ref: '${{ inputs.BRANCH_TO_DEPLOY_FROM }}' ##changed this line to below
-         ref: '${{ inputs.COMMITID }}' ## when using specific commit such as deploying a rel tag
+         ref: '${{ inputs.COMMITID }}' ## when using specific commit such as deploying a rel tag or a specific commitid
          fetch-tags: 'true'
          fetch-depth: 50
       - name: List-Top-Level-Contents-Of-Artifacts-Folder
@@ -98,7 +93,7 @@ jobs:
          ls -al ${{ GITHUB.WORKSPACE }}/${{ inputs.API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH }} || true 
       - name: List-All-Artifacts-Files-Captured-In-the-Commit
         id: list-all-artifact-files-changes-captured-in-the-commit
-        if: ${{ env.DEBUG_STEPS == 'true' && inputs.PUBLISH_ARTIFACTS_CHOICE == 'publish-all-artifacts-in-repo' }}
+        if: ${{ env.DEBUG_STEPS == 'true' && (inputs.PUBLISH_ARTIFACTS_CHOICE == 'publish-all-artifacts-in-repo-to-latest-commit' || inputs.PUBLISH_ARTIFACTS_CHOICE == 'publish-all-artifacts-in-repo-to-specific-commit') }}
         run: |
          echo "Listing all files in the repo"
          git ls-tree -r --name-only ${COMMITID}
@@ -111,7 +106,7 @@ jobs:
         #run: git diff --compact-summary ${COMMITID}^ ${COMMITID}
       - name: Run-Publisher
         id: run-publisher
-        if: ${{ always() }}
+        #if: ${{ always() }}
         shell: pwsh
         env:
           AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
@@ -137,10 +132,15 @@ jobs:
           $env:COMMIT_ID="$env:COMMITID"
           Write-Output "Commitid is $env:COMMITID"
           }
-          if ($publish_artifacts_choice -eq "publish-all-artifacts-in-repo") 
+          if ($publish_artifacts_choice -eq "publish-all-artifacts-in-repo-to-latest-commit") 
           {
-          Write-Output "User have chosen to publish All Artifacts in the branch"
-          Write-Output "Commitid is NULL(NULL because a specific Commitid is not set)"
+          Write-Output "User have chosen to publish All Artifacts in the branch uptil the latest commit"
+          Write-Output "Commitid is not set (NULL because ALL arificats is specified)"
+          }
+          if ($publish_artifacts_choice -eq "publish-all-artifacts-in-repo-to-specific-commit") 
+          {
+          Write-Output "User have chosen to publish All Artifacts in the branch uptill the specific commit"
+          Write-Output "Commitid is not set (NULL because ALL arificats is specified)"
           }
           Set-StrictMode -Version Latest
           $ErrorActionPreference = "Stop"
