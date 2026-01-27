@@ -35,8 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Print-Error-Nomilestone
-        if: ${{ !always() }}
-        #if: ${{ github.event.inputs.PR_MILESTONE_NUMBER == null }}
+        if: ${{ inputs.PR_MILESTONE_NUMBER == null }}
         id: print-error-nomilestone
         run: |
          echo "PR not associated with a milestone.Exiting"
@@ -44,8 +43,7 @@ jobs:
          exit 1
          continue-on-error: false
       - name: Print-Error-NoMergeCommit
-        if: ${{ !always() }}
-        #if: ${{ github.event.inputs.PR_MERGE_COMMIT_SHA == null }}
+        if: ${{ inputs.PR_MERGE_COMMIT_SHA == null }}
         id: print-error-nomergecommit
         run: |
          echo "No Merge Commmit available with the PR merge close event.Exiting"
@@ -55,27 +53,25 @@ jobs:
       - name: Set-ShortCommit-ID
         id: set-shortcommit-id
         run: |
-         echo "Short PR merge commit SHA is $(echo ${{ github.event.inputs.PR_MERGE_COMMIT_SHA }} | cut -c1-7)"
-         echo "SHORT_COMMITID=$(echo ${{ github.event.inputs.PR_MERGE_COMMIT_SHA }} | cut -c1-7)" >> "$GITHUB_OUTPUT"
+         echo "Short PR merge commit SHA is $(echo ${{ inputs.PR_MERGE_COMMIT_SHA }} | cut -c1-7)"
+         echo "SHORT_COMMITID=$(echo ${{ inputs.PR_MERGE_COMMIT_SHA }} | cut -c1-7)" >> "$GITHUB_OUTPUT"
       - name: Print-Relevant-Info
         id: print-relevant-info
         run: |
-         echo "PR number for this closed & merged PR is ${{ github.event.inputs.PR_NUMBER }}"
          echo "PR number for this closed & merged PR is ${{ inputs.PR_NUMBER }}"
-         echo "PR state is ${{ github.event.inputs.PR_STATE }}"
-         echo "PR milestone title is ${{ github.event.inputs.PR_MILESTONE_TITLE }}"
-         echo "PR milestone number is ${{ github.event.inputs.PR_MILESTONE_NUMBER }}"
+         echo "PR state is ${{ inputs.PR_STATE }}"
+         echo "PR milestone title is ${{ inputs.PR_MILESTONE_TITLE }}"
          echo "PR milestone number is ${{ inputs.PR_MILESTONE_NUMBER }}"
-         echo "PR base REF is ${{ github.event.inputs.PR_BASE_REF }}"
-         echo "PR head REF is ${{ github.event.inputs.PR_HEAD_REF }}"
-         echo "PR head SHA is ${{ github.event.inputs.PR_HEAD_SHA }}"
-         echo "PR merge commit SHA is ${{ github.event.inputs.PR_MERGE_COMMIT_SHA }}"
+         echo "PR base REF is ${{ inputs.PR_BASE_REF }}"
+         echo "PR head REF is ${{ inputs.PR_HEAD_REF }}"
+         echo "PR head SHA is ${{ inputs.PR_HEAD_SHA }}"
+         echo "PR merge commit SHA is ${{ inputs.PR_MERGE_COMMIT_SHA }}"
          echo "Short PR merge commit SHA is ${{ steps.set-shortcommit-id.outputs.SHORT_COMMITID }}"
       - name: Checkout-Base-Branch
         id: checkout-base-branch
         uses: actions/checkout@v6
         with:
-         ref: '${{ github.event.inputs.PR_MERGE_COMMIT_SHA }}'
+         ref: '${{ inputs.PR_MERGE_COMMIT_SHA }}'
          fetch-tags: 'true'
          fetch-depth: 50
       - name: Get-Current-Time
@@ -83,11 +79,10 @@ jobs:
         run: |
          echo "TAG_COMMIT_DATE=$(TZ="US/Eastern" date | sed 's/ /-/g')" >> "$GITHUB_OUTPUT"     
       - name: Tag-Merge-Commit
-        #if: ${{ !always() }}
         id: tag-merge-commit
         run: |
          cd $GITHUB_WORKSPACE
          pwd
-         echo "Commit tag is ms-${{ github.event.inputs.PR_MILESTONE_TITLE }}-pr-${{ github.event.inputs.PR_NUMBER }}-cid-${{ steps.set-shortcommit-id.outputs.SHORT_COMMITID }}-${{ steps.get-current-time.outputs.TAG_COMMIT_DATE }}"
+         echo "Commit tag is ms-${{ inputs.PR_MILESTONE_TITLE }}-pr-${{ inputs.PR_NUMBER }}-cid-${{ steps.set-shortcommit-id.outputs.SHORT_COMMITID }}-${{ steps.get-current-time.outputs.TAG_COMMIT_DATE }}"
          #git tag -f "milestone-${{ github.event.pull_request.milestone.title }}-pr-${{ github.event.pull_request.number }}-commitid-${{ steps.set-shortcommit-id.outputs.SHORT_COMMITID }}" ${{ github.event.pull_request.merge_commit_sha }}
          #git push origin "milestone-${{ github.event.pull_request.milestone.title }}-pr-${{ github.event.pull_request.number }}-commitid-${{ steps.set-shortcommit-id.outputs.SHORT_COMMITID }}"
