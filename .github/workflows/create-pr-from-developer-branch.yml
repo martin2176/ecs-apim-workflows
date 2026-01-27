@@ -61,7 +61,8 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: martin
-          base: main       
+          base: main
+          commit-message: test
       - name: Create-PR-For-Merging-To-Artifacts-Branch
         if: ${{ !always() }}
         id: Create-PR-For-Merging-To-Artifacts-Branch
