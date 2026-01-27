@@ -56,6 +56,8 @@ jobs:
          echo "PR head branch is ${{ inputs.HEAD_BRANCH_FOR_PR }}"
          echo "PR milestone number is ${{ steps.Create-Or-Get-MileStone.outputs.number }}"
       - name: Create-PR-For-Merging-To-Base-Branch
+        env:
+         GH_TOKEN: ${{ github.token }}
         id: Create-PR-For-Merging-To-Base-Branch
         run: |
          gh pr create --title "PR Opened by: ${{ github.triggering_actor }} for: ${{ inputs.REFERENCE_NUMBER }} at: US/Eastern ${{ steps.Get-Current-Time.outputs.PR_OPEN_DATE }}" \
