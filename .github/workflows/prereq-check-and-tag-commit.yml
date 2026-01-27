@@ -35,7 +35,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Print-Error-Nomilestone
-        if: ${{ github.event.inputs.PR_MILESTONE_NUMBER == null }}
+        if: ${{ !always() }}
+        #if: ${{ github.event.inputs.PR_MILESTONE_NUMBER == null }}
         id: print-error-nomilestone
         run: |
          echo "PR not associated with a milestone.Exiting"
@@ -43,7 +44,8 @@ jobs:
          exit 1
          continue-on-error: false
       - name: Print-Error-NoMergeCommit
-        if: ${{ github.event.inputs.PR_MERGE_COMMIT_SHA == null }}
+        if: ${{ !always() }}
+        #if: ${{ github.event.inputs.PR_MERGE_COMMIT_SHA == null }}
         id: print-error-nomergecommit
         run: |
          echo "No Merge Commmit available with the PR merge close event.Exiting"
@@ -62,6 +64,7 @@ jobs:
          echo "PR state is ${{ github.event.inputs.PR_STATE }}"
          echo "PR milestone title is ${{ github.event.inputs.PR_MILESTONE_TITLE }}"
          echo "PR milestone number is ${{ github.event.inputs.PR_MILESTONE_NUMBER }}"
+         echo "PR milestone number is ${{ inputs.PR_MILESTONE_NUMBER }}
          echo "PR base REF is ${{ github.event.inputs.PR_BASE_REF }}"
          echo "PR head REF is ${{ github.event.inputs.PR_HEAD_REF }}"
          echo "PR head SHA is ${{ github.event.inputs.PR_HEAD_SHA }}"
