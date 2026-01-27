@@ -34,7 +34,7 @@ jobs:
         uses: actions/checkout@v4
         with:
          #ref: '${{ env.BASE_BRANCH_FOR_PR }}'
-         ref: martin
+         ref: main
          fetch-depth: 20
          fetch-tags: 'false'
         
@@ -61,7 +61,7 @@ jobs:
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          branch: martin
+          head: martin
           base: main
           commit-message: test
       - name: Create-PR-For-Merging-To-Artifacts-Branch
