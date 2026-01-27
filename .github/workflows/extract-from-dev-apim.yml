@@ -188,7 +188,7 @@ jobs:
       - name: Get-Current-Time
         id: Get-Current-Time
         run: |
-         echo "PR_OPEN_DATE=$(TZ="US/Eastern" date | sed 's/ /-/g')" >> "$GITHUB_OUTPUT"
+         echo "PR_OPEN_DATE=$(TZ="US/Eastern" date | sed 's/ /-/g' | sed 's/:/-/g')" >> "$GITHUB_OUTPUT"
          
       - name: Create-PR-For-Merging-To-Artifacts-Branch
         id: Create-PR-For-Merging-To-Artifacts-Branch
