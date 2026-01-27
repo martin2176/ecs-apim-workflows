@@ -61,10 +61,11 @@ jobs:
         id: print-relevant-info
         run: |
          echo "PR number for this closed & merged PR is ${{ github.event.inputs.PR_NUMBER }}"
+         echo "PR number for this closed & merged PR is ${{ inputs.PR_NUMBER }}"
          echo "PR state is ${{ github.event.inputs.PR_STATE }}"
          echo "PR milestone title is ${{ github.event.inputs.PR_MILESTONE_TITLE }}"
          echo "PR milestone number is ${{ github.event.inputs.PR_MILESTONE_NUMBER }}"
-         echo "PR milestone number is ${{ inputs.PR_MILESTONE_NUMBER }}
+         echo "PR milestone number is ${{ inputs.PR_MILESTONE_NUMBER }}"
          echo "PR base REF is ${{ github.event.inputs.PR_BASE_REF }}"
          echo "PR head REF is ${{ github.event.inputs.PR_HEAD_REF }}"
          echo "PR head SHA is ${{ github.event.inputs.PR_HEAD_SHA }}"
