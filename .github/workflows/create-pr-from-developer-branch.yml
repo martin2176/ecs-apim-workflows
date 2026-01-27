@@ -33,8 +33,9 @@ jobs:
         id: Checkout-Artifacts-Branch
         uses: actions/checkout@v4
         with:
-         ref: '${{ env.BASE_BRANCH_FOR_PR }}'
-         fetch-depth: 1
+         #ref: '${{ env.BASE_BRANCH_FOR_PR }}'
+         ref: martin
+         fetch-depth: 20
          fetch-tags: 'false'
         
       - name: Create-Or-Get-MileStone
