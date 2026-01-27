@@ -82,7 +82,6 @@ jobs:
         id: tag-merge-commit
         run: |
          cd $GITHUB_WORKSPACE
-         pwd
          echo "Commit tag is ms-${{ inputs.PR_MILESTONE_TITLE }}-pr-${{ inputs.PR_NUMBER }}-cid-${{ steps.set-shortcommit-id.outputs.SHORT_COMMITID }}-${{ steps.get-current-time.outputs.TAG_COMMIT_DATE }}"
-         #git tag -f "milestone-${{ github.event.pull_request.milestone.title }}-pr-${{ github.event.pull_request.number }}-commitid-${{ steps.set-shortcommit-id.outputs.SHORT_COMMITID }}" ${{ github.event.pull_request.merge_commit_sha }}
-         #git push origin "milestone-${{ github.event.pull_request.milestone.title }}-pr-${{ github.event.pull_request.number }}-commitid-${{ steps.set-shortcommit-id.outputs.SHORT_COMMITID }}"
+         git tag -f "ms-${{ inputs.PR_MILESTONE_TITLE }}-pr-${{ inputs.PR_NUMBER }}-cid-${{ steps.set-shortcommit-id.outputs.SHORT_COMMITID }}-${{ steps.get-current-time.outputs.TAG_COMMIT_DATE }}" ${{ inputs.PR_MERGE_COMMIT_SHA }}
+         git push origin "ms-${{ inputs.PR_MILESTONE_TITLE }}-pr-${{ inputs.PR_NUMBER }}-cid-${{ steps.set-shortcommit-id.outputs.SHORT_COMMITID }}-${{ steps.get-current-time.outputs.TAG_COMMIT_DATE }}"
