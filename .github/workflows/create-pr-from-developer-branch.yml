@@ -48,6 +48,13 @@ jobs:
         id: Get-Current-Time
         run: |
          echo "PR_OPEN_DATE=$(TZ="US/Eastern" date | sed 's/ /-/g' | sed 's/:/-/g')" >> "$GITHUB_OUTPUT"
+      - name: Print-Relevant-Info
+        id: print-relevant-info
+        run: |
+         echo "Reference number is ${{ inputs.REFERENCE_NUMBER }}"
+         echo "PR base branch is ${{ inputs.BASE_BRANCH_FOR_PR }}"
+         echo "PR head branch is ${{ inputs.HEAD_BRANCH_FOR_PR }}"
+         echo "PR milestone number is ${{ steps.Create-Or-Get-MileStone.outputs.number }}"
          
       - name: Create-PR-For-Merging-To-Artifacts-Branch
         id: Create-PR-For-Merging-To-Artifacts-Branch
