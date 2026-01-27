@@ -57,6 +57,7 @@ jobs:
          echo "PR milestone number is ${{ steps.Create-Or-Get-MileStone.outputs.number }}"
          
       - name: Create-PR-For-Merging-To-Artifacts-Branch
+        if: ${{ !always() }}
         id: Create-PR-For-Merging-To-Artifacts-Branch
         uses: peter-evans/create-pull-request@v8
         with:
