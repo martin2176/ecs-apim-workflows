@@ -45,6 +45,22 @@ env:
   BASE_BRANCH_FOR_PR: ${{ inputs.BASE_BRANCH_FOR_PR }}
   MILESTONE_TITLE: ${{ inputs.REFERENCE_NUMBER }}
 jobs:
+  Print-User-Selections:
+    name: Print-User-Selections
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print-Input-From-Calling-Workflow
+        id: print-input-from-callingworkflow
+        shell: bash
+        run: |
+         echo "Configurationyamlpath is ${{ inputs.CONFIGURATION_YAML_PATH }}"
+         echo "Head Branch for PR is ${{ inputs.HEAD_BRANCH_FOR_PR }}"
+         echo "Base Branch for PR is ${{ inputs.BASE_BRANCH_FOR_PR }}"
+         echo "Reference number is ${{ inputs.REFERENCE_NUMBER }}"
+         echo "Extractor option is ${{ inputs.EXTRACTOR_OPTION }}"
+         echo "APIM environment is ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}"
+         echo "API Spec format is ${{ inputs.API_SPECIFICATION_FORMAT }}"
+         echo "APIM environment is ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}"
   Extract-Artifacts:
     name: Extract-Artifacts
     runs-on: ubuntu-latest
