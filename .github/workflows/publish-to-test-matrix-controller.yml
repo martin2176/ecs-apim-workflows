@@ -42,18 +42,16 @@ jobs:
          
     Publish-Artifacts-to-Test-APIM-For-CommitID:
      needs: Generate-Matrix-Jobs
-     concurrency:
-      group: publish-to-dev-apim-instance
-      cancel-in-progress: false
-     name: Publish-Artifacts-to-Test-APIM-For-CommitID
-     environment: ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}
-     runs-on: ubuntu-latest
      strategy:
       max-parallel: 1
       matrix:
        commitid: ${{ fromJson(needs.Generate-Matrix-Jobs.outputs.matrix) }}
-     steps:
-      - name: Deploy of commit ${{ matrix.commitid }}
-        id: print-input-from-calling-workflow
-        run: |
-         echo "Deploy of commit ${{ matrix.commitid }}"
+     uses: martin2176/ecs-apim-workflows/.github/workflows/publish-to-test-apim.yml@main
+     with:
+      COMMITID: ${{ matrix.commitid }}
+      PUBLISH_ARTIFACTS_CHOICE: "publish-delta-artifacts-in-specific-commit"
+      API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH: apimartifacts
+      CONFIGURATION_YAML_PATH: configuration-publisher-test.yml
+      API_MANAGEMENT_ENVIRONMENT: test
+      BRANCH_TO_DEPLOY_FROM: ${{ inputs.BRANCH_TO_DEPLOY_FROM }} 
+      REFTOCHECKOUTFOR_PUBLISHERCONFIG: test 
