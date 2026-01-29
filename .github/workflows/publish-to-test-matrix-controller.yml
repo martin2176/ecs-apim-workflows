@@ -32,7 +32,7 @@ jobs:
      name: Publish-Artifacts-to-Test-APIM-For-CommitID
      runs-on: ubuntu-latest
      strategy:
-      max-parallel: 1
+      max-parallel: 3
       matrix:
        commitid: [1, 2, 3]
      steps:
