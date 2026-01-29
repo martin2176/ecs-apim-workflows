@@ -27,9 +27,10 @@ jobs:
         run: |
          echo "milestone is ${{ inputs.MILESTONE_TITLE }}"
          echo "apimanagementenvironment is ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}"
-         echo "brnach to deploy artifacts is ${{ inputs.BRANCH_TO_DEPLOY_FROM }}"
+         echo "branch to deploy artifacts is ${{ inputs.BRANCH_TO_DEPLOY_FROM }}"
     Publish-Artifacts-to-Test-APIM-For-CommitID:
      name: Publish-Artifacts-to-Test-APIM-For-CommitID
+     environment: ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}
      runs-on: ubuntu-latest
      strategy:
       max-parallel: 3
