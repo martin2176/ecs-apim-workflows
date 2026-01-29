@@ -17,8 +17,8 @@ on:
 env:
   foo: bar
 jobs:
-    Generate-Matrix-Jobs:
-     name: Generate-Matrix-Jobs
+    Generate-Matrix-Jobs-For-CommitID:
+     name: Generate-Matrix-Jobs-For-CommitID
      environment: ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}
      runs-on: ubuntu-latest
      steps:
@@ -39,4 +39,4 @@ jobs:
       - name: Deploy of commit ${{ matrix.commitid }}
         id: print-input-from-calling-workflow
         run: |
-         run: echo "Deploy of commit ${{ matrix.commitid }}"
+         echo "Deploy of commit ${{ matrix.commitid }}"
