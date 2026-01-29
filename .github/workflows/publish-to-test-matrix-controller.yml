@@ -21,6 +21,8 @@ jobs:
      name: Generate-Matrix-Jobs
      environment: ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}
      runs-on: ubuntu-latest
+     outputs:
+       matrix: ${{ steps.generate-matrix.outputs.matrix }}
      steps:
       - name: Print-Input-From-Calling-Workflow
         id: print-input-from-calling-workflow
@@ -28,7 +30,18 @@ jobs:
          echo "milestone is ${{ inputs.MILESTONE_TITLE }}"
          echo "apimanagementenvironment is ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}"
          echo "branch to deploy artifacts is ${{ inputs.BRANCH_TO_DEPLOY_FROM }}"
+      - name: Generate-Matrix
+        id: generate-matrix
+        run: |
+         DYNAMIC_ARRAY='["item1", "item2", "item3"]'
+         echo "matrix=$DYNAMIC_ARRAY" >> $GITHUB_OUTPUT
+      - name: Print
+        id: print
+        run: |
+          echo ${{ steps.generate-matrix.outputs.matrix }}
+         
     Publish-Artifacts-to-Test-APIM-For-CommitID:
+     needs: Generate-Matrix-Jobs
      concurrency:
       group: publish-to-dev-apim-instance
       cancel-in-progress: false
@@ -36,9 +49,9 @@ jobs:
      environment: ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}
      runs-on: ubuntu-latest
      strategy:
-      max-parallel: 3
+      max-parallel: 1
       matrix:
-       commitid: [1, 2, 3]
+       commitid: ${{ fromJson(needs.Generate-Matrix-Jobs.outputs.matrix) }}
      steps:
       - name: Deploy of commit ${{ matrix.commitid }}
         id: print-input-from-calling-workflow
