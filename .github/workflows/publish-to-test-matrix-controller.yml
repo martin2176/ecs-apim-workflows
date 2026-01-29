@@ -1,0 +1,29 @@
+#Reusable workflow to generate matrix jobs for deployment to Test APIM instance
+name: Publish-Artifacts-to-Test-APIM-Matrix-Jobs-Controller
+run-name: Publish-Artifacts-to-Test-APIM-Matrix-Jobs-Controller
+#Author martin francis kallukalam
+on:
+  workflow_call:
+    inputs:
+      MILESTONE_TITLE:
+        required: true
+        type: string
+      API_MANAGEMENT_ENVIRONMENT:
+        required: true
+        type: string
+      BRANCH_TO_DEPLOY_FROM:
+        required: true
+        type: string
+env:
+  foo: bar
+jobs:
+    Generate-Matrix-Jobs:
+     name: Generate-Matrix-Jobs
+     runs-on: ubuntu-latest
+     steps:
+      - name: Print-Input-From-Calling-Workflow
+        id: print-input-from-calling-workflow
+        run: |
+         echo "milestone is ${{ inputs.MILESTONE_TITLE }}"
+         echo "apimanagementenvironment is ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}"
+         echo "brnach to deploy artifacts is ${{ inputs.BRANCH_TO_DEPLOY_FROM }}"
