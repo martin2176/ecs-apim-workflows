@@ -15,10 +15,10 @@ on:
         required: true
         type: string
 env:
-  foo: bar
+  COMMIT_TAG_PREFIX: ms
 jobs:
-    Generate-Matrix-Jobs-2:
-     name: Generate-Matrix-Jobs-1
+    Generate-Matrix-Jobs:
+     name: Generate-Matrix-Jobs
      environment: ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}
      runs-on: ubuntu-latest
      outputs:
@@ -30,22 +30,34 @@ jobs:
          echo "milestone is ${{ inputs.MILESTONE_TITLE }}"
          echo "apimanagementenvironment is ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}"
          echo "branch to deploy artifacts is ${{ inputs.BRANCH_TO_DEPLOY_FROM }}"
+      - name: Checkout-Artifacts-Branch
+        id: checkout-artifacts-branch
+        uses: actions/checkout@v6
+        with:
+         ref: '${{ inputs.BRANCH_TO_DEPLOY_FROM }}'
+         fetch-tags: 'true'
+         fetch-depth: 100     
       - name: Generate-Matrix
         id: generate-matrix
         run: |
-         DYNAMIC_ARRAY='["item1", "item2", "item3"]'
-         echo "matrix=$DYNAMIC_ARRAY" >> $GITHUB_OUTPUT
+         #TAG_LIST=$(git tag -l "${{ env.COMMIT_TAG_PREFIX }}-${{ inputs.MILESTONE_TITLE }}" --sort=-creatordate)
+         TAG_LIST_ARRAY=$(git tag -l "${{ env.COMMIT_TAG_PREFIX }}-${{ inputs.MILESTONE_TITLE }}-*" --sort=-creatordate | jq -Rs 'split("\n") | .[] | select(length > 0)' | jq -s .)
+         echo "$TAG_LIST_ARRAY"
+         echo "matrix=$TAG_LIST_ARRAY" >> $GITHUB_OUTPUT
+         
+         #DYNAMIC_ARRAY='["item1", "item2", "item3"]'
+         #echo "matrix=$DYNAMIC_ARRAY" >> $GITHUB_OUTPUT
       - name: Print
         id: print
         run: |
-          echo ${{ steps.generate-matrix.outputs.matrix }}
+          echo "${{ steps.generate-matrix.outputs.matrix }}"
          
     Publish-Artifacts-to-Test-APIM-For-CommitID:
-     needs: Generate-Matrix-Jobs-2
+     needs: Generate-Matrix-Jobs
      strategy:
       max-parallel: 1
       matrix:
-       commitid: ${{ fromJson(needs.Generate-Matrix-Jobs-2.outputs.matrix) }}
+       commitid: ${{ fromJson(needs.Generate-Matrix-Jobs.outputs.matrix) }}
      uses: martin2176/ecs-apim-workflows/.github/workflows/publish-to-test-apim.yml@main
      with:
       COMMITID: ${{ matrix.commitid }}
