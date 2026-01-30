@@ -39,12 +39,19 @@ jobs:
          fetch-depth: 100     
       - name: Generate-Matrix
         id: generate-matrix
+        continue-on-error: false
         run: |
          #TAG_LIST=$(git tag -l "${{ env.COMMIT_TAG_PREFIX }}-${{ inputs.MILESTONE_TITLE }}" --sort=-creatordate)
          TAG_LIST_ARRAY=$(git tag -l "${{ env.COMMIT_TAG_PREFIX }}-${{ inputs.MILESTONE_TITLE }}-*" --sort=-creatordate | jq -Rs 'split("\n") | .[] | select(length > 0)' | jq -s .)
          echo "$TAG_LIST_ARRAY"
          echo "matrix=$TAG_LIST_ARRAY" >> $GITHUB_OUTPUT
-         
+         if echo "$TAG_LIST_ARRAY" | jq -e 'length == 0'; then
+          echo "Tag List is empty.Exiting"
+          echo "Tag List is empty.Exiting :thumbsdown:" > $GITHUB_STEP_SUMMARY
+          exit 1
+         else
+          echo "Tag List is not empty.Continuing"
+         fi
          #DYNAMIC_ARRAY='["item1", "item2", "item3"]'
          #echo "matrix=$DYNAMIC_ARRAY" >> $GITHUB_OUTPUT
       - name: Print
