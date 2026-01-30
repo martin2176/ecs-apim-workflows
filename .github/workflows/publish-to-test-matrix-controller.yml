@@ -17,8 +17,8 @@ on:
 env:
   foo: bar
 jobs:
-    Generate-Matrix-Jobs:
-     name: Generate-Matrix-Jobs
+    Generate-Matrix-Jobs-2:
+     name: Generate-Matrix-Jobs-1
      environment: ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}
      runs-on: ubuntu-latest
      outputs:
