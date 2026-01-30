@@ -60,6 +60,7 @@ jobs:
           echo "${{ steps.generate-matrix.outputs.matrix }}"
          
     Publish-Artifacts-to-Test-APIM-For-CommitID:
+     if: !always()
      needs: Generate-Matrix-Jobs
      strategy:
       max-parallel: 1
