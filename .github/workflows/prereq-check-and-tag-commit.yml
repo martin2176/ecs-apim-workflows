@@ -37,19 +37,21 @@ jobs:
       - name: Print-Error-Nomilestone
         if: ${{ inputs.PR_MILESTONE_NUMBER == null }}
         id: print-error-nomilestone
+        continue-on-error: false
         run: |
          echo "PR not associated with a milestone.Exiting"
          echo "PR not associated with a milestone.Exiting. :thumbsdown:" > $GITHUB_STEP_SUMMARY
          exit 1
-         continue-on-error: false
+
       - name: Print-Error-NoMergeCommit
         if: ${{ inputs.PR_MERGE_COMMIT_SHA == null }}
         id: print-error-nomergecommit
+        continue-on-error: false
         run: |
          echo "No Merge Commmit available with the PR merge close event.Exiting"
          echo "No Merge Commmit available with the PR merge close event. :thumbsdown:" > $GITHUB_STEP_SUMMARY
          exit 1
-         continue-on-error: false
+
       - name: Set-ShortCommit-ID
         id: set-shortcommit-id
         run: |
