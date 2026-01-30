@@ -56,11 +56,13 @@ jobs:
          #DYNAMIC_ARRAY='["item1", "item2", "item3"]'
          #echo "matrix=$DYNAMIC_ARRAY" >> $GITHUB_OUTPUT
       - name: Print
+        env:
+          matrixenv: ${{ toJson(steps.generate-matrix.outputs.matrix) }}
         #if: ${{ !always() }}
         id: print
         run: |
           echo "${{ steps.generate-matrix.outputs.matrix }}"
-          echo "toJSON(${{ steps.generate-matrix.outputs.matrix }})"
+          echo "$matrixenv"
          
     Publish-Artifacts-to-Test-APIM-For-CommitID:
      #if: ${{ !always() }}
