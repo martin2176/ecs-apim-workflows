@@ -56,13 +56,13 @@ jobs:
          #DYNAMIC_ARRAY='["item1", "item2", "item3"]'
          #echo "matrix=$DYNAMIC_ARRAY" >> $GITHUB_OUTPUT
       - name: Print
-        if: ${{ !always() }}
+        #if: ${{ !always() }}
         id: print
         run: |
           echo "${{ steps.generate-matrix.outputs.matrix }}"
          
     Publish-Artifacts-to-Test-APIM-For-CommitID:
-     if: ${{ !always() }}
+     #if: ${{ !always() }}
      needs: Generate-Matrix-Jobs
      strategy:
       max-parallel: 1
