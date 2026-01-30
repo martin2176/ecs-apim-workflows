@@ -60,6 +60,7 @@ jobs:
         id: print
         run: |
           echo "${{ steps.generate-matrix.outputs.matrix }}"
+          echo "toJSON(${{ steps.generate-matrix.outputs.matrix }})"
          
     Publish-Artifacts-to-Test-APIM-For-CommitID:
      #if: ${{ !always() }}
