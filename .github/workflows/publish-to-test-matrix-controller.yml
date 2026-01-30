@@ -41,11 +41,11 @@ jobs:
           echo ${{ steps.generate-matrix.outputs.matrix }}
          
     Publish-Artifacts-to-Test-APIM-For-CommitID:
-     needs: Generate-Matrix-Jobs
+     needs: Generate-Matrix-Jobs-2
      strategy:
       max-parallel: 1
       matrix:
-       commitid: ${{ fromJson(needs.Generate-Matrix-Jobs.outputs.matrix) }}
+       commitid: ${{ fromJson(needs.Generate-Matrix-Jobs-2.outputs.matrix) }}
      uses: martin2176/ecs-apim-workflows/.github/workflows/publish-to-test-apim.yml@main
      with:
       COMMITID: ${{ matrix.commitid }}
