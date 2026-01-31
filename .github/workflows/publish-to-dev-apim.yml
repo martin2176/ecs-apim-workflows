@@ -43,7 +43,7 @@ env:
   
 jobs:
     Publish-Artifacts-to-Dev-APIM:
-     name: Publish-Artifacts-to-Dev-APIM
+     name: Publish-Artifacts-to-Test-APIM-From-CommitID-${{ inputs.COMMITID }}
      runs-on: ubuntu-latest
      environment: ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}
      steps:
