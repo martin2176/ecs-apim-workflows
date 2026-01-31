@@ -31,10 +31,6 @@ on:
 # "publish-delta-artifacts-in-specific-commit"
 # "publish-all-artifacts-in-repo-to-latest-commit"
 # "publish-all-artifacts-in-repo-to-specific-commit"
-concurrency:
- group: publish-to-dev-apim-instance
- cancel-in-progress: false
-
 env:
   apiops_release_version: v7.0.0-alpha.3.0.1
   Logging__LogLevel__Default: ${{ vars.LOG_LEVEL }}
