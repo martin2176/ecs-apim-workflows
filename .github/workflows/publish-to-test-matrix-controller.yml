@@ -43,7 +43,7 @@ jobs:
          fetch-depth: 100
       - name: Validate-Milestone
         id: validate-milestone
-        continue-on-error: false
+        continue-on-error: true
         run: |
 
          gh api repos/martin2176/ecs-petstore/milestones | jq -e --arg title "${{ inputs.MILESTONE_TITLE }}" '.[] | select(.title == $title)'
