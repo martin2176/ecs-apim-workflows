@@ -54,6 +54,17 @@ jobs:
           echo "Milestone ${{ inputs.MILESTONE_TITLE }} does not exist.Exiting"
           echo "Milestone ${{ inputs.MILESTONE_TITLE }} does not exist.Exiting :thumbsdown:" > $GITHUB_STEP_SUMMARY
           exit 1
+      - name: Exit-If-OpenPRs-On-MileStone
+        id: exit-if-openprs-on-milestone
+        continue-on-error: false
+        run: |
+          OPEN_PR_COUNT=$(gh pr list --search 'milestone:"${{ inputs.MILESTONE_TITLE }}"' --state open --json number | jq '. | length')
+          if [ "$OPEN_PR_COUNT" -gt 0 ]; then
+           echo "::error::There are $OPEN_PR_COUNT open PRs in the milestone ${{ inputs.MILESTONE_TITLE }}.Exiting."
+           exit 1
+          else
+           echo "No Open PRs found in the milestone ${{ inputs.MILESTONE_TITLE }}.Continuing."
+          fi
       - name: Generate-Matrix
         id: generate-matrix
         continue-on-error: false
