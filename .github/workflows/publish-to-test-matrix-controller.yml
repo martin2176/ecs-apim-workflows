@@ -45,7 +45,7 @@ jobs:
         id: validate-milestone
         continue-on-error: true
         run: |
-         gh api repos/${{ github.repository }}/milestones | jq -e --arg title "${{ inputs.MILESTONE_TITLE }}" '.[] | select(.title == $title)'
+         gh api repos/${{ github.repository }}/milestones | jq -e --arg title "${{ inputs.MILESTONE_TITLE }}" '.[] | select(.title == $title)' > /dev/null
       - name: Exit-If-Milestone-NotExist
         id: exit-if-milestone-notexist
         continue-on-error: false
