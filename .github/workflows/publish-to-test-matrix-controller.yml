@@ -1,6 +1,6 @@
 #Reusable workflow to generate matrix jobs for deployment to Test APIM instance
-name: Publish-Artifacts-to-Test-APIM-Matrix-Jobs-Controller
-run-name: Publish-Artifacts-to-Test-APIM-Matrix-Jobs-Controller
+name: Publish-Artifacts-to-Test-APIM-Instance-Matrix-Jobs-Controller
+run-name: Publish-Artifacts-to-Test-APIM-Instance-Matrix-Jobs-Controller
 #Author martin francis kallukalam
 on:
   workflow_call:
@@ -15,10 +15,12 @@ on:
         required: true
         type: string
 env:
-  COMMIT_TAG_PREFIX: ms
+  MILESTONE_PREFIX: ms
+  PR_PREFIX: pr
+  COMMIT_PREFIX: cid
 jobs:
-    Generate-Matrix-Jobs:
-     name: Generate-Matrix-Jobs
+    Validate-Milestone-and-Generate-Matrix-Jobs:
+     name: Validate-Milestone-and-Generate-Matrix-Jobs
      environment: ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}
      runs-on: ubuntu-latest
      outputs:
@@ -29,23 +31,33 @@ jobs:
         run: |
          echo "milestone is ${{ inputs.MILESTONE_TITLE }}"
          echo "apimanagementenvironment is ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}"
-         echo "branch to deploy artifacts is ${{ inputs.BRANCH_TO_DEPLOY_FROM }}"
+         echo "branch to deploy artifacts from is ${{ inputs.BRANCH_TO_DEPLOY_FROM }}"
       - name: Checkout-Artifacts-Branch
         id: checkout-artifacts-branch
         uses: actions/checkout@v6
         with:
          ref: '${{ inputs.BRANCH_TO_DEPLOY_FROM }}'
          fetch-tags: 'true'
-         fetch-depth: 100     
+         fetch-depth: 100
+      - name: Validate-Milestone
+        id: validate-milestone
+        continue-on-error: false
+        run: |
+         TAG_LIST_ARRAY=$(git tag -l "${{ env.MILESTONE_PREFIX }}-${{ inputs.MILESTONE_TITLE }}-*" --sort=-creatordate | jq -Rs 'split("\n") | .[] | select(length > 0)' | jq -s .)
+         echo "matrix="$TAG_LIST_ARRAY"" >> $GITHUB_OUTPUT
+         if echo "$TAG_LIST_ARRAY" | jq -e 'length == 0'; then
+          echo "Tag List is empty.Exiting"
+          echo "Tag List is empty.Exiting :thumbsdown:" > $GITHUB_STEP_SUMMARY
+          exit 1
+         else
+          echo "Tag List is not empty.Continuing"
+         fi         
       - name: Generate-Matrix
         id: generate-matrix
         continue-on-error: false
         run: |
-         #TAG_LIST=$(git tag -l "${{ env.COMMIT_TAG_PREFIX }}-${{ inputs.MILESTONE_TITLE }}" --sort=-creatordate)
-         TAG_LIST_ARRAY=$(git tag -l "${{ env.COMMIT_TAG_PREFIX }}-${{ inputs.MILESTONE_TITLE }}-*" --sort=-creatordate | jq -Rs 'split("\n") | .[] | select(length > 0)' | jq -s .)
-         echo "$TAG_LIST_ARRAY"
+         TAG_LIST_ARRAY=$(git tag -l "${{ env.MILESTONE_PREFIX }}-${{ inputs.MILESTONE_TITLE }}-*" --sort=-creatordate | jq -Rs 'split("\n") | .[] | select(length > 0)' | jq -s .)
          echo "matrix="$TAG_LIST_ARRAY"" >> $GITHUB_OUTPUT
-         #echo "matrix=foo" >> $GITHUB_OUTPUT
          if echo "$TAG_LIST_ARRAY" | jq -e 'length == 0'; then
           echo "Tag List is empty.Exiting"
           echo "Tag List is empty.Exiting :thumbsdown:" > $GITHUB_STEP_SUMMARY
@@ -53,24 +65,21 @@ jobs:
          else
           echo "Tag List is not empty.Continuing"
          fi
-         #DYNAMIC_ARRAY='["item1", "item2", "item3"]'
-         #echo "matrix=$DYNAMIC_ARRAY" >> $GITHUB_OUTPUT
-      - name: Print
+      - name: Print-Matrix
         env:
           matrixenv: ${{ toJson(steps.generate-matrix.outputs.matrix) }}
-        #if: ${{ !always() }}
-        id: print
+        id: print-matrix
         run: |
-          echo "${{ steps.generate-matrix.outputs.matrix }}"
+          echo "${{ toJson(steps.generate-matrix.outputs.matrix) }}"
           echo "$matrixenv"
          
     Publish-Artifacts-to-Test-APIM-For-CommitID:
      #if: ${{ !always() }}
-     needs: Generate-Matrix-Jobs
+     needs: Validate-Milestone-and-Generate-Matrix-Jobs
      strategy:
       max-parallel: 1
       matrix:
-       commitid: ${{ fromJson(needs.Generate-Matrix-Jobs.outputs.matrix) }}
+       commitid: ${{ fromJson(needs.Validate-Milestone-and-Generate-Matrix-Jobs.outputs.matrix) }}
      uses: martin2176/ecs-apim-workflows/.github/workflows/publish-to-test-apim.yml@main
      with:
       COMMITID: ${{ matrix.commitid }}
