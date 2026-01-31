@@ -39,8 +39,8 @@ env:
   DEBUG_STEPS: ${{ vars.DEBUG_STEPS }}
 
 jobs:
-    Publish-Artifacts-to-Test-APIM-2:
-     name: Publish-Artifacts-to-Test-APIM-1-forcommmitid-${{ inputs.COMMITID }}
+    Publish-Artifacts-to-Test-APIM:
+     name: Publish-Artifacts-to-Test-APIM-From-Tag-${{ inputs.COMMITID }}
      runs-on: ubuntu-latest
      ############environment: ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}
      steps:
