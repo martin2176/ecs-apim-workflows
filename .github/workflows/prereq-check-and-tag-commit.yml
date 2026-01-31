@@ -79,7 +79,6 @@ jobs:
       - name: Get-Current-Time
         id: get-current-time
         run: |
-         #echo "TAG_COMMIT_DATE=$(TZ="US/Eastern" date | sed 's/ /-/g' | sed 's/:/-/g')" >> "$GITHUB_OUTPUT"
          echo "TAG_COMMIT_DATE=$(TZ="US/Eastern" date  +"EST-%Y-%m-%d-%H-%M-%S")" >> "$GITHUB_OUTPUT"
       - name: Tag-Merge-Commit
         id: tag-merge-commit
