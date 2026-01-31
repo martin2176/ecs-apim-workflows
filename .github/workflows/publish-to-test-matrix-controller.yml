@@ -43,16 +43,17 @@ jobs:
          fetch-depth: 100
       - name: Validate-Milestone
         id: validate-milestone
-        continue-on-error: false
+        continue-on-error: true
         run: |
          gh api repos/martin2176/ecs-petstore/milestones | jq -e --arg title "${{ inputs.MILESTONE_TITLE }}" '.[] | select(.title == $title)'
-         if [ $? -eq 0 ]; then
-           echo "Milestone ${{ inputs.MILESTONE_TITLE }} exists.Continuing"
-         else
+      - name: Exit-If-Milestone-NotExist
+        id: exit-if-milestone-notexist
+        continue-on-error: false
+        if: ${{ steps.validate-milestone.outcome == 'failure' }}
+        run: |
           echo "Milestone ${{ inputs.MILESTONE_TITLE }} does not exist.Exiting"
           echo "Milestone ${{ inputs.MILESTONE_TITLE }} does not exist.Exiting :thumbsdown:" > $GITHUB_STEP_SUMMARY
           exit 1
-         fi
       - name: Generate-Matrix
         id: generate-matrix
         continue-on-error: false
