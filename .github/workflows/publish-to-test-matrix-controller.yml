@@ -65,7 +65,9 @@ jobs:
         id: exit-if-milestone-doesnot-exist
         continue-on-error: false
         run: |
-          MILESTONE_COUNT=$(gh milestone list  --state all -q "${{ inputs.MILESTONE_TITLE }}" --json title | jq '. | length')
+          #OLD LOGIC doesnt work well if there are milestones such as test,test1,test2
+          #MILESTONE_COUNT=$(gh milestone list  --state all -q "${{ inputs.MILESTONE_TITLE }}" --json title | jq '. | length')
+          MILESTONE_COUNT=$(gh milestone list  --state all -q "${{ inputs.MILESTONE_TITLE }}" --json title |jq '.[] | select(.title == "${{ inputs.MILESTONE_TITLE }}")'  |jq -s '[.[]]'  | jq '. | length')
           if [ "$MILESTONE_COUNT" -eq 1 ]; then
            echo "Milestone ${{ inputs.MILESTONE_TITLE }} exist.Continuing."
           else
