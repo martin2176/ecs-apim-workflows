@@ -64,6 +64,16 @@ jobs:
           else
            echo "No Open PRs found in the milestone ${{ inputs.MILESTONE_TITLE }}.Continuing."
           fi
+      - name: Exit-If-OpenIssues-On-MileStone
+        id: exit-if-openissues-on-milestone
+        continue-on-error: false
+        run: |
+          OPEN_ISSUE_COUNT=$(gh issue list --search 'milestone:"${{ inputs.MILESTONE_TITLE }}"' --state open --json number | jq '. | length')
+          if [ "$OPEN_ISSUE_COUNT" -gt 0 ]; then
+           echo "::error::Cannot continue when there is $OPEN_ISSUE_COUNT open Issue(s) in the milestone ${{ inputs.MILESTONE_TITLE }}.Exiting." && exit 1
+          else
+           echo "No Open Issues found in the milestone ${{ inputs.MILESTONE_TITLE }}.Continuing."
+          fi
       - name: Generate-Matrix
         id: generate-matrix
         continue-on-error: false
