@@ -121,7 +121,7 @@ jobs:
        commit_tag: ${{ fromJson(needs.Validate-Milestone-and-Generate-Matrix-Jobs.outputs.matrix) }}
      uses: martin2176/ecs-apim-workflows/.github/workflows/publish-to-test-apim.yml@main
      with:
-      COMMIT_TAG: ${{ matrix.commit_tag }}
+      COMMIT_TAG: ${{ matrix.commit_tag }}  #For Test env commit tag is passed 
       PUBLISH_ARTIFACTS_CHOICE: "publish-delta-artifacts-in-specific-commit"
       API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH: apimartifacts
       CONFIGURATION_YAML_PATH: configuration-publisher-test.yml
