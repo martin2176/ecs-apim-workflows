@@ -29,7 +29,7 @@ on:
 # PUBLISH_ARTIFACTS_CHOICE has one allowed value when deploying to test
 # "publish-delta-artifacts-in-specific-commit"
 concurrency:
- group: publish-to-test-apim-instance
+ group: publish-to-test-apim-instance-matrixjob
  cancel-in-progress: false
 
 env:
