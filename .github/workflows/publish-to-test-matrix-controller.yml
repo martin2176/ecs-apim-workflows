@@ -113,15 +113,15 @@ jobs:
         id: print-matrix
         run: |
           echo "${{ toJson(steps.generate-matrix.outputs.matrix) }}"
-    Publish-Artifacts-to-Test-APIM-For-CommitID:
+    Publish-Artifacts-to-Test-APIM-For-COMMIT-TAG:
      needs: Validate-Milestone-and-Generate-Matrix-Jobs
      strategy:
       max-parallel: 1
       matrix:
-       commitid: ${{ fromJson(needs.Validate-Milestone-and-Generate-Matrix-Jobs.outputs.matrix) }}
+       commit_tag: ${{ fromJson(needs.Validate-Milestone-and-Generate-Matrix-Jobs.outputs.matrix) }}
      uses: martin2176/ecs-apim-workflows/.github/workflows/publish-to-test-apim.yml@main
      with:
-      COMMITID: ${{ matrix.commitid }}
+      COMMIT_TAG: ${{ matrix.commit_tag }}
       PUBLISH_ARTIFACTS_CHOICE: "publish-delta-artifacts-in-specific-commit"
       API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH: apimartifacts
       CONFIGURATION_YAML_PATH: configuration-publisher-test.yml
