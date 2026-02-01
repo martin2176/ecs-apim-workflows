@@ -17,7 +17,7 @@ on:
       PUBLISH_ARTIFACTS_CHOICE:
         required: true
         type: string
-      COMMIT_TAG:
+      COMMITID:
         required: true
         type: string
       BRANCH_TO_DEPLOY_FROM:
@@ -35,12 +35,12 @@ concurrency:
 env:
   apiops_release_version: v7.0.0-alpha.3.0.1
   Logging__LogLevel__Default: ${{ vars.LOG_LEVEL }}
-  COMMIT_TAG: ${{ inputs.COMMIT_TAG }}
+  COMMITID: ${{ inputs.COMMITID }}
   DEBUG_STEPS: ${{ vars.DEBUG_STEPS }}
 
 jobs:
     Publish-Artifacts-to-Test-APIM:
-     name: Publish-Artifacts-to-Test-APIM-From-Tag-${{ inputs.COMMIT_TAG }}
+     name: Publish-Artifacts-to-Test-APIM-From-Tag-${{ inputs.COMMITID }}
      runs-on: ubuntu-latest
      ############environment: ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}
      steps:
@@ -51,7 +51,7 @@ jobs:
          echo "configurationyamlpath is ${{ inputs.CONFIGURATION_YAML_PATH }}"
          echo "apimanagementserviceoutputfolderpath is ${{ inputs.API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH }}"
          echo "publishartifactschoice is ${{ inputs.PUBLISH_ARTIFACTS_CHOICE }}"
-         echo "commit_tag is: ${COMMIT_TAG}"
+         echo "COMMITID is: ${COMMITID}"
          echo "branch to deploy artifacts from is: ${{ inputs.BRANCH_TO_DEPLOY_FROM }}"
          echo "ref for publisher config is: ${{ inputs.REFTOCHECKOUTFOR_PUBLISHERCONFIG }}"
 
@@ -80,7 +80,7 @@ jobs:
         id: checkout-artifacts-branch
         uses: actions/checkout@v6
         with:
-         ref: '${{ inputs.COMMIT_TAG }}' ## when using specific commit such as deploying a rel tag or a specific commitid
+         ref: '${{ inputs.COMMITID }}' ## when using specific commit such as deploying a rel tag or a specific commitid
          fetch-tags: 'true'
          fetch-depth: 50
       - name: List-Top-Level-Contents-Of-Artifacts-Folder
