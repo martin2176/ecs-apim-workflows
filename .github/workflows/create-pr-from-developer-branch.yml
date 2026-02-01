@@ -22,6 +22,8 @@ env:
   MILESTONE_TITLE: ${{ inputs.REFERENCE_NUMBER }}
 jobs:
   Create-Pull-Request:
+    env:
+     GH_TOKEN: ${{ github.token }}
     name: Create-Pull-Request-for-Milestone-${{ inputs.REFERENCE_NUMBER }}
     runs-on: [ubuntu-latest]
     permissions:
