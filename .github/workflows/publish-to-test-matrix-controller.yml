@@ -28,6 +28,11 @@ jobs:
      outputs:
        matrix: ${{ steps.generate-matrix.outputs.matrix }}
      steps:
+      - name: Install-GH-Milestone-Extension
+        id: install-gh-milestone-extension
+        run: |
+         echo "Installing milestone gh extension."
+         gh extension install valeriobelli/gh-milestone
       - name: Print-Input-From-Calling-Workflow
         id: print-input-from-calling-workflow
         run: |
@@ -43,17 +48,29 @@ jobs:
          fetch-depth: 100
       - name: Validate-Milestone
         id: validate-milestone
+        if: ${{ !always() }}
         continue-on-error: true
         run: |
          gh api repos/${{ github.repository }}/milestones | jq -e --arg title "${{ inputs.MILESTONE_TITLE }}" '.[] | select(.title == $title)' > /dev/null
       - name: Exit-If-Milestone-NotExist
         id: exit-if-milestone-notexist
+        if: ${{ !always() }}
         continue-on-error: false
-        if: ${{ steps.validate-milestone.outcome == 'failure' }}
+        #if: ${{ steps.validate-milestone.outcome == 'failure' }}
         run: |
           echo "Milestone ${{ inputs.MILESTONE_TITLE }} does not exist.Exiting"
           echo "Milestone ${{ inputs.MILESTONE_TITLE }} does not exist.Exiting :thumbsdown:" > $GITHUB_STEP_SUMMARY
           exit 1
+      - name: Exit-If-Milestone-DoesNotExist
+        id: exit-if-milestone-doesnot-exist
+        continue-on-error: false
+        run: |
+          MILESTONE_COUNT=$(gh milestone list  --state all -q "${{ inputs.MILESTONE_TITLE }}" --json title | jq '. | length')
+          if [ "$MILESTONE_COUNT" -eq 1 ]; then
+           echo "Milestone ${{ inputs.MILESTONE_TITLE }} exist.Continuing."
+          else
+           echo "::error::Milestone ${{ inputs.MILESTONE_TITLE }} not found.Exiting." && exit 1
+          fi      
       - name: Exit-If-OpenPRs-On-MileStone
         id: exit-if-openprs-on-milestone
         continue-on-error: false
@@ -96,7 +113,7 @@ jobs:
           echo "$matrixenv"
          
     Publish-Artifacts-to-Test-APIM-For-CommitID:
-     #if: ${{ !always() }}
+    #if: ${{ !always() }}
      needs: Validate-Milestone-and-Generate-Matrix-Jobs
      strategy:
       max-parallel: 1
