@@ -114,7 +114,6 @@ jobs:
         run: |
           echo "${{ toJson(steps.generate-matrix.outputs.matrix) }}"
     Publish-Artifacts-to-Test-APIM-For-CommitID:
-    #if: ${{ !always() }}
      needs: Validate-Milestone-and-Generate-Matrix-Jobs
      strategy:
       max-parallel: 1
