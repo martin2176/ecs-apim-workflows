@@ -36,9 +36,28 @@ jobs:
          ref: '${{ env.BASE_BRANCH_FOR_PR }}'
          fetch-depth: 10
          fetch-tags: 'false'
-        
+      - name: Install-GH-Milestone-Extension
+        id: install-gh-milestone-extension
+        run: |
+         echo "Installing milestone gh extension."
+         gh extension install valeriobelli/gh-milestone
       - name: Create-Or-Get-MileStone
         id: create-or-get-milestone
+        continue-on-error: false
+        run: |
+          MILESTONE_COUNT=$(gh milestone list  --state all -q "${{ inputs.REFERENCE_NUMBER }}" --json title |jq '.[] | select(.title == "${{ inputs.REFERENCE_NUMBER }}")'  |jq -s '[.[]]'  | jq '. | length')
+          if [ "$MILESTONE_COUNT" -eq 1 ]; then
+           echo "Milestone ${{ inputs.REFERENCE_NUMBER }} exist.Continuing without creating a new milestone."
+          else
+           echo "Milestone doesnot exist.Creating a new milestone ${{ inputs.REFERENCE_NUMBER }}"
+           gh milestone create --title "${{ inputs.REFERENCE_NUMBER }}"
+          fi
+          echo "title=${{ inputs.REFERENCE_NUMBER }}" >> "$GITHUB_OUTPUT"
+          echo "number=$(gh milestone list  -q "${{ inputs.REFERENCE_NUMBER }}" --state all --json number,title --jq '.[] | select(.title == "${{ inputs.REFERENCE_NUMBER }}") | .number')" >> "$GITHUB_OUTPUT"
+          
+      - name: Create-Or-Get-MileStone1
+        id: create-or-get-milestone1
+        if: ${{ !always() }}
         uses: sv-tools/create-milestone-action@v2.0.0
         with:
          token: ${{ secrets.GITHUB_TOKEN }}
@@ -57,6 +76,7 @@ jobs:
          echo "PR milestone number is ${{ steps.create-or-get-milestone.outputs.number }}"
          echo "PR milestone name is ${{ steps.create-or-get-milestone.outputs.title }}"
       - name: Create-PR-For-Merging-To-Artifacts-Branch
+        if: ${{ !always() }}
         env:
          GH_TOKEN: ${{ github.token }}
         id: create-pr-for-squash-merging-to-artifacts-branch
