@@ -32,10 +32,6 @@ on:
 #EXTRACTOR_OPTION has possible two values listed below
 #Extract Selected APIM Artifacts
 #Extract All APIM Artifacts
-concurrency:
- group: extract-artifacts-from-dev-apim
- cancel-in-progress: false
-
 env:
   apiops_release_version: v7.0.0-alpha.3.0.1
   Logging__LogLevel__Default: ${{ vars.LOG_LEVEL }}
