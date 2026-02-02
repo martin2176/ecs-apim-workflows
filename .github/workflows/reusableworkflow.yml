@@ -20,10 +20,7 @@ jobs:
        echo "${{ inputs.API_MANAGEMENT_ENVIRONMENT }}"
     - name: Checkout repository
       uses: actions/checkout@v6
-    - name: Debug OIDC Claims
-      uses: github/actions-oidc-debugger@main
-      with:
-        audience: '${{ github.server_url }}/${{ github.repository_owner }}'    
+ 
     - name: Azure Login
       uses: azure/login@v2
       with:
