@@ -104,7 +104,7 @@ jobs:
       - name: Convert-Tag-To-CommitID
         id: convert-tag-to-commitid
         run:  |
-         COMMITID="$(git rev-list -n 1 $tag)"
+         COMMITID="$(git rev-list -n 1 ${{ inputs.COMMIT_TAG }})"
          echo "CommitID is $COMMITID"
          echo "COMMITID=${COMMITID}" >> "$GITHUB_ENV"
       - name: Run-Publisher
