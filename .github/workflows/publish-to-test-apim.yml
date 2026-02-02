@@ -17,7 +17,7 @@ on:
       PUBLISH_ARTIFACTS_CHOICE:
         required: true
         type: string
-      COMMITID:
+      COMMIT_TAG:
         required: true
         type: string
       BRANCH_TO_DEPLOY_FROM:
@@ -35,12 +35,12 @@ concurrency:
 env:
   apiops_release_version: v7.0.0-alpha.3.0.1
   Logging__LogLevel__Default: ${{ vars.LOG_LEVEL }}
-  COMMITID: ${{ inputs.COMMITID }}
+  COMMIT_TAG: ${{ inputs.COMMIT_TAG }}
   DEBUG_STEPS: ${{ vars.DEBUG_STEPS }}
 
 jobs:
     Publish-Artifacts-to-Test-APIM:
-     name: Publish-Artifacts-to-Test-APIM-From-Tag-${{ inputs.COMMITID }}
+     name: Publish-Artifacts-to-Test-APIM-From-Tag-${{ inputs.COMMIT_TAG }}
      runs-on: ubuntu-latest
      ############environment: ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}
      steps:
@@ -51,14 +51,14 @@ jobs:
          echo "configurationyamlpath is ${{ inputs.CONFIGURATION_YAML_PATH }}"
          echo "apimanagementserviceoutputfolderpath is ${{ inputs.API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH }}"
          echo "publishartifactschoice is ${{ inputs.PUBLISH_ARTIFACTS_CHOICE }}"
-         echo "COMMITID is: ${COMMITID}"
+         echo "COMMIT_TAG is: ${{ inputs.COMMIT_TAG }}"
          echo "branch to deploy artifacts from is: ${{ inputs.BRANCH_TO_DEPLOY_FROM }}"
          echo "ref for publisher config is: ${{ inputs.REFTOCHECKOUTFOR_PUBLISHERCONFIG }}"
 
       - name: Checkout-Test-Branch
         id: checkout-test-branch
         if: ${{ inputs.API_MANAGEMENT_ENVIRONMENT == 'test' }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
          ref: '${{ inputs.REFTOCHECKOUTFOR_PUBLISHERCONFIG }}'
       - name: Copy-ConfigurationOverride-File
@@ -80,7 +80,7 @@ jobs:
         id: checkout-artifacts-branch
         uses: actions/checkout@v6
         with:
-         ref: '${{ inputs.COMMITID }}' ## when using specific commit such as deploying a rel tag or a specific commitid
+         ref: '${{ inputs.COMMIT_TAG }}' ## when using specific commit such as deploying a rel tag or a specific commitid
          fetch-tags: 'true'
          fetch-depth: 50
       - name: List-Top-Level-Contents-Of-Artifacts-Folder
@@ -94,13 +94,19 @@ jobs:
         if: ${{ env.DEBUG_STEPS == 'true' && (inputs.PUBLISH_ARTIFACTS_CHOICE == 'publish-all-artifacts-in-repo-to-latest-commit' || inputs.PUBLISH_ARTIFACTS_CHOICE == 'publish-all-artifacts-in-repo-to-specific-commit') }}
         run: |
          echo "Listing all files in the repo"
-         git ls-tree -r --name-only ${COMMITID}
+         git ls-tree -r --name-only ${COMMIT_TAG}
       - name: List-Delta-Artifacts-Files-Captured-In-the-Commit
         id: list-delta-artifact-files-changes-captured-in-the-commit
         if: ${{ env.DEBUG_STEPS == 'true' && (inputs.PUBLISH_ARTIFACTS_CHOICE == 'publish-delta-artifacts-in-latest-commit' || inputs.PUBLISH_ARTIFACTS_CHOICE == 'publish-delta-artifacts-in-specific-commit') }}
         run:  |
          echo "Listing files changed in the commit"
-         git diff --compact-summary --name-status -B -M -C ${COMMITID}^ ${COMMITID}
+         git diff --compact-summary --name-status -B -M -C ${COMMIT_TAG}^ ${COMMIT_TAG}
+      - name: Convert-Tag-To-CommitID
+        id: convert-tag-to-commitid
+        run:  |
+         COMMITID="$(git rev-list -n 1 $tag)"
+         echo "CommitID is $COMMITID"
+         echo "COMMITID=${COMMITID}" >> "$GITHUB_ENV"
       - name: Run-Publisher
         id: run-publisher
         shell: pwsh
