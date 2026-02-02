@@ -3,22 +3,7 @@ run-name: reusableworkflow
 on:
   workflow_call:
    inputs:
-    COMMITID:
-     required: true
-     type: string
-    PUBLISH_ARTIFACTS_CHOICE:
-     required: true
-     type: string
-    API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH:
-     required: true
-     type: string
-    CONFIGURATION_YAML_PATH:
-     required: true
-     type: string
     API_MANAGEMENT_ENVIRONMENT:
-     required: true
-     type: string
-    BRANCH_TO_DEPLOY_FROM:
      required: true
      type: string
 permissions:
@@ -32,18 +17,9 @@ jobs:
     - name: print values passedin
       shell: bash
       run: |
-       echo "${{ inputs.COMMITID }}"
-       echo "${{ inputs.PUBLISH_ARTIFACTS_CHOICE }}"
-       echo "${{ inputs.API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH }}"
-       echo "${{ inputs.CONFIGURATION_YAML_PATH }}"
        echo "${{ inputs.API_MANAGEMENT_ENVIRONMENT }}"
-       echo "${{ inputs.BRANCH_TO_DEPLOY_FROM }}"
-       echo "${{ secrets.MYSECRET }}"
-       echo "${{ vars.LOG_LEVEL }}"
-       echo "${{ vars.ECS_APIM_WORKFLOWS_VARIABLE }}"
-       echo "${{ secrets.ECS_APIM_WORKFLOWS_SECRET }}"
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
     - name: Debug OIDC Claims
       uses: github/actions-oidc-debugger@main
       with:
@@ -65,5 +41,3 @@ jobs:
       shell: bash
       run: |
        echo "$SECRET_VALUE"  | sed 's/./& /g'
-       echo "hello"
-       echo "$SECRET_VALUE"-1
