@@ -110,7 +110,7 @@ jobs:
          echo "CommitID is $COMMITID"
          echo "COMMITID=${COMMITID}" >> "$GITHUB_ENV"
       - name: Run-Publisher
-        #if: ${{ !always() }} 
+        if: ${{ !always() }} 
         id: run-publisher
         shell: pwsh
         env:
