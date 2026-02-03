@@ -89,7 +89,7 @@ jobs:
           az account get-access-token --resource https://management.azure.com/ | jq -r '.'
           access_token=$(echo $token_json | jq -r '.accessToken')
           echo "$access_token"
-          echo "AZURE_BEARER_TOKEN="$access_token"" >> $GITHUB_ENV 
+          echo "AZURE_BEARER_TOKEN1="$access_token"" >> $GITHUB_ENV 
 ########################
       - name: Checkout-Test-Branch
         id: checkout-test-branch
