@@ -68,12 +68,12 @@ jobs:
         uses: azure/CLI@v2
         with:
          inlineScript: |
-          SECRET_VALUE=$(az keyvault secret show --name AZURE_TENANT_ID --vault-name martin-azurekv --query value -o tsv)
-          SECRET_VALUE=$(az keyvault secret show --name AZURE_SUBSCRIPTION_ID --vault-name martin-azurekv --query value -o tsv)
-          SECRET_VALUE=$(az keyvault secret show --name AZURE_RESOURCE_GROUP_NAME --vault-name martin-azurekv --query value -o tsv)
-          SECRET_VALUE=$(az keyvault secret show --name AZURE_CLIENT_ID --vault-name martin-azurekv --query value -o tsv)
-          SECRET_VALUE=$(az keyvault secret show --name AZURE_CLIENT_SECRET --vault-name martin-azurekv --query value -o tsv)
-          SECRET_VALUE=$(az keyvault secret show --name API_MANAGEMENT_SERVICE_NAME --vault-name martin-azurekv --query value -o tsv)
+          AZURE_TENANT_ID=$(az keyvault secret show --name AZURE-TENANT-ID --vault-name martin-azurekv --query value -o tsv)
+          AZURE_SUBSCRIPTION_ID=$(az keyvault secret show --name AZURE-SUBSCRIPTION-ID --vault-name martin-azurekv --query value -o tsv)
+          AZURE_RESOURCE_GROUP_NAME=$(az keyvault secret show --name AZURE-RESOURCE-GROUP-NAME --vault-name martin-azurekv --query value -o tsv)
+          AZURE_CLIENT_ID=$(az keyvault secret show --name AZURE-CLIENT-ID --vault-name martin-azurekv --query value -o tsv)
+          AZURE_CLIENT_SECRET=$(az keyvault secret show --name AZURE-CLIENT-SECRET --vault-name martin-azurekv --query value -o tsv)
+          API_MANAGEMENT_SERVICE_NAME=$(az keyvault secret show --name API-MANAGEMENT-SERVICE-NAME --vault-name martin-azurekv --query value -o tsv)
           echo "AZURE_TENANT_ID="$AZURE_TENANT_ID"" >> $GITHUB_ENV
           echo "AZURE_SUBSCRIPTION_ID="$AZURE_SUBSCRIPTION_ID"" >> $GITHUB_ENV  
           echo "AZURE_RESOURCE_GROUP_NAME="$AZURE_RESOURCE_GROUP_NAME"" >> $GITHUB_ENV  
