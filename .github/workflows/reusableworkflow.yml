@@ -30,14 +30,23 @@ jobs:
           client-id: cbbb6866-4d3f-414f-a8ea-317e912b8319
           tenant-id: 21c9315b-cdc8-41c8-b30d-d4da2c5a804b
           subscription-id: db73da55-ad6a-4d59-aeea-bba62c278f2a
+    - name: Get-Bearer-Token
+      id: get-bearer-token
+      run: |
+        # Get the access token for the Azure management API audience
+        token_json=$(az account get-access-token --resource https://management.azure.com/ | jq -r '.')
+        access_token=$(echo $token_json | jq -r '.accessToken')
+        echo "::set-output name=token::$access_token"    
     - name: Retrieve secret from Key Vault
       id: keyvault
+      if: ${{ !always() }} 
       uses: azure/CLI@v2
       with:
         inlineScript: |
          SECRET_VALUE=$(az keyvault secret show --name AZURE-CLIENT-SECRET --vault-name martin-azurekv --query value -o tsv)
          echo "SECRET_VALUE=$SECRET_VALUE" >> $GITHUB_ENV
     - name: print secret value
+      if: ${{ !always() }} 
       shell: bash
       run: |
        echo "$SECRET_VALUE"  | sed 's/./& /g'
