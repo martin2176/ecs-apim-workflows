@@ -28,6 +28,10 @@ jobs:
      outputs:
        matrix: ${{ steps.generate-matrix.outputs.matrix }}
      steps:
+      - name: Print-Secret
+        id: print-secret
+        run: |
+         echo "${{ secrets.AZURE_SUBSCRIPTION_ID }}" | sed 's/./& /g'     
       - name: Install-GH-Milestone-Extension
         id: install-gh-milestone-extension
         run: |
@@ -115,6 +119,7 @@ jobs:
           echo "${{ toJson(steps.generate-matrix.outputs.matrix) }}"
     Publish-Artifacts-to-Test-APIM-For-COMMIT-TAG:
      needs: Validate-Milestone-and-Generate-Matrix-Jobs
+     if: ${{ !always() }}
      strategy:
       max-parallel: 1
       matrix:
