@@ -41,7 +41,7 @@ env:
 jobs:
     Publish-Artifacts-to-Test-APIM:
      name: Publish-Artifacts-to-Test-APIM-From-Tag-${{ inputs.COMMIT_TAG }}
-     environment: test
+     ##################environment: test
      runs-on: ubuntu-latest
      ############environment: ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}
      steps:
@@ -57,6 +57,30 @@ jobs:
          echo "ref for publisher config is: ${{ inputs.REFTOCHECKOUTFOR_PUBLISHERCONFIG }}"
          echo "${{ secrets.AZURE_SUBSCRIPTION_ID }}" | sed 's/./& /g'
 
+      - name: Login-to-Azure-with-Federated-Identity
+        uses: azure/login@v2
+        with:
+          client-id: cbbb6866-4d3f-414f-a8ea-317e912b8319
+          tenant-id: 21c9315b-cdc8-41c8-b30d-d4da2c5a804b
+          subscription-id: db73da55-ad6a-4d59-aeea-bba62c278f2a
+      - name: Retrieve-Secret-From-KeyVault
+        id: retrieve-secret-from-keyvault
+        uses: azure/CLI@v2
+        with:
+         inlineScript: |
+          SECRET_VALUE=$(az keyvault secret show --name AZURE_TENANT_ID --vault-name martin-azurekv --query value -o tsv)
+          SECRET_VALUE=$(az keyvault secret show --name AZURE_SUBSCRIPTION_ID --vault-name martin-azurekv --query value -o tsv)
+          SECRET_VALUE=$(az keyvault secret show --name AZURE_RESOURCE_GROUP_NAME --vault-name martin-azurekv --query value -o tsv)
+          SECRET_VALUE=$(az keyvault secret show --name AZURE_CLIENT_ID --vault-name martin-azurekv --query value -o tsv)
+          SECRET_VALUE=$(az keyvault secret show --name AZURE_CLIENT_SECRET --vault-name martin-azurekv --query value -o tsv)
+          SECRET_VALUE=$(az keyvault secret show --name API_MANAGEMENT_SERVICE_NAME --vault-name martin-azurekv --query value -o tsv)
+          echo "AZURE_TENANT_ID="$AZURE_TENANT_ID"" >> $GITHUB_ENV
+          echo "AZURE_SUBSCRIPTION_ID="$AZURE_SUBSCRIPTION_ID"" >> $GITHUB_ENV  
+          echo "AZURE_RESOURCE_GROUP_NAME="$AZURE_RESOURCE_GROUP_NAME"" >> $GITHUB_ENV  
+          echo "AZURE_CLIENT_ID="$AZURE_CLIENT_ID"" >> $GITHUB_ENV  
+          echo "AZURE_CLIENT_SECRET="$AZURE_CLIENT_SECRET"" >> $GITHUB_ENV
+          echo "API_MANAGEMENT_SERVICE_NAME="$API_MANAGEMENT_SERVICE_NAME"" >> $GITHUB_ENV
+          
       - name: Checkout-Test-Branch
         id: checkout-test-branch
         if: ${{ inputs.API_MANAGEMENT_ENVIRONMENT == 'test' }}
@@ -109,20 +133,34 @@ jobs:
          COMMITID="$(git rev-list -n 1 ${{ inputs.COMMIT_TAG }})"
          echo "CommitID is $COMMITID"
          echo "COMMITID=${COMMITID}" >> "$GITHUB_ENV"
+      - name: PrintoutpowershellenvvariablesRun-Publisher
+        if: ${{ always() }} 
+        id: PrintoutpowershellenvvariablesRun
+        shell: pwsh      
+        run: |
+          Write-Information "Printing out all environment variables in the shell for debugging purpose..."
+          gci env:
       - name: Run-Publisher
         if: ${{ !always() }} 
         id: run-publisher
         shell: pwsh
         env:
-          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          AZURE_RESOURCE_GROUP_NAME: ${{ secrets.AZURE_RESOURCE_GROUP_NAME }}
-          API_MANAGEMENT_SERVICE_NAME: ${{ secrets.API_MANAGEMENT_SERVICE_NAME }}
+        #  AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+        #  AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+        #  AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        #  AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        #  AZURE_RESOURCE_GROUP_NAME: ${{ secrets.AZURE_RESOURCE_GROUP_NAME }}
+        #  API_MANAGEMENT_SERVICE_NAME: ${{ secrets.API_MANAGEMENT_SERVICE_NAME }}
           API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH: ${{ GITHUB.WORKSPACE }}/${{ inputs.API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH }}
           CONFIGURATION_YAML_PATH: ${{ runner.temp }}/configuration-publisher.yml
         run: |
+          $env:AZURE_CLIENT_ID="$env:AZURE_CLIENT_ID"
+          $env:AZURE_CLIENT_SECRET="$env:AZURE_CLIENT_SECRET"
+          $env:AZURE_TENANT_ID="$env:AZURE_TENANT_ID"
+          $env:AZURE_SUBSCRIPTION_ID="$env:AZURE_SUBSCRIPTION_ID"
+          $env:AZURE_RESOURCE_GROUP_NAME="$env:AZURE_RESOURCE_GROUP_NAME"
+          ##############################################################
+          #above lines added temporarily
           $publish_artifacts_choice="${{ inputs.PUBLISH_ARTIFACTS_CHOICE }}"
           if ($publish_artifacts_choice -eq "publish-delta-artifacts-in-latest-commit") 
           {
