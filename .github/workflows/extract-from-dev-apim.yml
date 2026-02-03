@@ -62,6 +62,12 @@ jobs:
          echo "APIM environment is ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}"
          echo "API Spec format is ${{ inputs.API_SPECIFICATION_FORMAT }}"
          echo "APIM environment is ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}"
+     
+  Extract-Artifacts:
+    name: Extract-Artifacts
+    runs-on: ubuntu-latest
+    environment:  ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}
+    steps:
       - name: Login-to-Azure-with-Federated-Identity
         id: login-to-azure-with-federated-identity
         uses: azure/login@v2
@@ -75,12 +81,7 @@ jobs:
           AZURE_BEARER_TOKEN_JSON=$(az account get-access-token --resource https://management.azure.com/ | jq -r '.')
           AZURE_BEARER_TOKEN=$(echo "$AZURE_BEARER_TOKEN_JSON" | jq -r '.accessToken')
           echo "AZURE_BEARER_TOKEN="$AZURE_BEARER_TOKEN"" >> $GITHUB_ENV
-          #Publisher apiops uses this env variable for authentication          
-  Extract-Artifacts:
-    name: Extract-Artifacts
-    runs-on: ubuntu-latest
-    environment:  ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}
-    steps:
+          #Publisher apiops uses this env variable for authentication    
       - name: Checkout-Configuration-File
         id: checkout-configuration-file
         uses: actions/checkout@v6
