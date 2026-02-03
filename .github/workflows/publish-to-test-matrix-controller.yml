@@ -119,7 +119,6 @@ jobs:
           echo "${{ toJson(steps.generate-matrix.outputs.matrix) }}"
     Publish-Artifacts-to-Test-APIM-For-COMMIT-TAG:
      needs: Validate-Milestone-and-Generate-Matrix-Jobs
-     if: ${{ !always() }}
      strategy:
       max-parallel: 1
       matrix:
@@ -132,4 +131,6 @@ jobs:
       CONFIGURATION_YAML_PATH: configuration-publisher-test.yml
       API_MANAGEMENT_ENVIRONMENT: test
       BRANCH_TO_DEPLOY_FROM: ${{ inputs.BRANCH_TO_DEPLOY_FROM }} 
-      REFTOCHECKOUTFOR_PUBLISHERCONFIG: test 
+      REFTOCHECKOUTFOR_PUBLISHERCONFIG: test
+     secrets: 
+      inherit 
