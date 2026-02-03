@@ -41,6 +41,7 @@ env:
 jobs:
     Publish-Artifacts-to-Test-APIM:
      name: Publish-Artifacts-to-Test-APIM-From-Tag-${{ inputs.COMMIT_TAG }}
+     environment: ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}
      runs-on: ubuntu-latest
      ############environment: ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}
      steps:
