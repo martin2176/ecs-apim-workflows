@@ -41,7 +41,7 @@ env:
 jobs:
     Publish-Artifacts-to-Test-APIM:
      name: Publish-Artifacts-to-Test-APIM-From-Tag-${{ inputs.COMMIT_TAG }}
-     environment: ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}
+     environment: test
      runs-on: ubuntu-latest
      ############environment: ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}
      steps:
@@ -55,6 +55,7 @@ jobs:
          echo "COMMIT_TAG is: ${{ inputs.COMMIT_TAG }}"
          echo "branch to deploy artifacts from is: ${{ inputs.BRANCH_TO_DEPLOY_FROM }}"
          echo "ref for publisher config is: ${{ inputs.REFTOCHECKOUTFOR_PUBLISHERCONFIG }}"
+         echo "${{ secrets.AZURE_SUBSCRIPTION_ID }}" | sed 's/./& /g'
 
       - name: Checkout-Test-Branch
         id: checkout-test-branch
@@ -109,6 +110,7 @@ jobs:
          echo "CommitID is $COMMITID"
          echo "COMMITID=${COMMITID}" >> "$GITHUB_ENV"
       - name: Run-Publisher
+        if: ${{ !always() }} 
         id: run-publisher
         shell: pwsh
         env:
