@@ -78,10 +78,19 @@ jobs:
           echo "AZURE_TENANT_ID="$AZURE_TENANT_ID"" >> $GITHUB_ENV
           echo "AZURE_SUBSCRIPTION_ID="$AZURE_SUBSCRIPTION_ID"" >> $GITHUB_ENV  
           echo "AZURE_RESOURCE_GROUP_NAME="$AZURE_RESOURCE_GROUP_NAME"" >> $GITHUB_ENV  
-          echo "AZURE_CLIENT_ID="$AZURE_CLIENT_ID"" >> $GITHUB_ENV  
-          echo "AZURE_CLIENT_SECRET="$AZURE_CLIENT_SECRET"" >> $GITHUB_ENV
+          #echo "AZURE_CLIENT_ID="$AZURE_CLIENT_ID"" >> $GITHUB_ENV  
+          #echo "AZURE_CLIENT_SECRET="$AZURE_CLIENT_SECRET"" >> $GITHUB_ENV
           echo "API_MANAGEMENT_SERVICE_NAME="$API_MANAGEMENT_SERVICE_NAME"" >> $GITHUB_ENV
-          
+####################
+      - name: Get-Bearer-Token
+        id: get-bearer-token
+        run: |
+          token_json=$(az account get-access-token --resource https://management.azure.com/ | jq -r '.')
+          az account get-access-token --resource https://management.azure.com/ | jq -r '.'
+          access_token=$(echo $token_json | jq -r '.accessToken')
+          echo "$access_token"
+          echo "AZURE_BEARER_TOKEN="$access_token"" >> $GITHUB_ENV 
+########################
       - name: Checkout-Test-Branch
         id: checkout-test-branch
         if: ${{ inputs.API_MANAGEMENT_ENVIRONMENT == 'test' }}
