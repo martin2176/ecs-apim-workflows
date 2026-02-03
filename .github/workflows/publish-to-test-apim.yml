@@ -46,9 +46,7 @@ env:
 jobs:
     Publish-Artifacts-to-Test-APIM:
      name: Publish-Artifacts-to-Test-APIM-From-Tag-${{ inputs.COMMIT_TAG }}
-     ##################environment: test
      runs-on: ubuntu-latest
-     ############environment: ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}
      steps:
       - name: Print-Input-From-Calling-Workflow
         id: print-input-from-calling-workflow
@@ -64,11 +62,10 @@ jobs:
         id: login-to-azure-with-federated-identity
         uses: azure/login@v2
         with:
-          client-id: cbbb6866-4d3f-414f-a8ea-317e912b8319
-          tenant-id: 21c9315b-cdc8-41c8-b30d-d4da2c5a804b
-          subscription-id: db73da55-ad6a-4d59-aeea-bba62c278f2a
+          client-id: ${{ env.AZURE_CLIENT_ID }}
+          tenant-id: ${{ env.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
       - name: Get-Bearer-Token-for-APIOPS-Publisher
-        if: ${{ !always() }} 
         id: get-bearer-token-for-apiops-publisher
         run: |
           AZURE_BEARER_TOKEN_JSON=$(az account get-access-token --resource https://management.azure.com/ | jq -r '.')
