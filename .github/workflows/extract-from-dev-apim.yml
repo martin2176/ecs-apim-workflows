@@ -62,6 +62,20 @@ jobs:
          echo "APIM environment is ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}"
          echo "API Spec format is ${{ inputs.API_SPECIFICATION_FORMAT }}"
          echo "APIM environment is ${{ inputs.API_MANAGEMENT_ENVIRONMENT }}"
+      - name: Login-to-Azure-with-Federated-Identity
+        id: login-to-azure-with-federated-identity
+        uses: azure/login@v2
+        with:
+          client-id: ${{ env.AZURE_CLIENT_ID }}
+          tenant-id: ${{ env.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+      - name: Get-Bearer-Token-for-APIOPS-Publisher
+        id: get-bearer-token-for-apiops-publisher
+        run: |
+          AZURE_BEARER_TOKEN_JSON=$(az account get-access-token --resource https://management.azure.com/ | jq -r '.')
+          AZURE_BEARER_TOKEN=$(echo "$AZURE_BEARER_TOKEN_JSON" | jq -r '.accessToken')
+          echo "AZURE_BEARER_TOKEN="$AZURE_BEARER_TOKEN"" >> $GITHUB_ENV
+          #Publisher apiops uses this env variable for authentication          
   Extract-Artifacts:
     name: Extract-Artifacts
     runs-on: ubuntu-latest
@@ -79,15 +93,18 @@ jobs:
          echo "configurationyamlpath is ${{ inputs.CONFIGURATION_YAML_PATH }}"
          echo "Head Branch for PR is ${{ inputs.HEAD_BRANCH_FOR_PR }}"
          echo "Base Branch for PR is ${{ inputs.BASE_BRANCH_FOR_PR }}"
+      - name: Print-PS-Environment-Variables
+        if: ${{ env.DEBUG_STEPS == 'true' }} 
+        id: printpsenvironmentvariables
+        shell: pwsh      
+        run: |
+          Write-Information "Printing out all environment variables in the shell for debugging purpose"
+          gci env:
       - name: Run-Extractor
         id: run-extractor
+        shell: pwsh
         env:
-          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          AZURE_RESOURCE_GROUP_NAME: ${{ secrets.AZURE_RESOURCE_GROUP_NAME }}
-          API_MANAGEMENT_SERVICE_NAME: ${{ secrets.API_MANAGEMENT_SERVICE_NAME }}
+          # Other env variables are not added explicitly because they are assigned by workflow
           API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH: ${{ runner.temp }}/apimartifacts
           API_SPECIFICATION_FORMAT: ${{ inputs.API_SPECIFICATION_FORMAT }}
         run: |
@@ -158,7 +175,7 @@ jobs:
 
           Write-Information "Execution complete."
           ls -R $env:API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH || true
-        shell: pwsh
+
 
       - name: Upload-Artifact
         id: upload-artifact
