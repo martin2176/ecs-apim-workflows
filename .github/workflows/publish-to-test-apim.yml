@@ -61,6 +61,8 @@ jobs:
          echo "branch to deploy artifacts from is: ${{ inputs.BRANCH_TO_DEPLOY_FROM }}"
          echo "ref for publisher config is: ${{ inputs.REFTOCHECKOUTFOR_PUBLISHERCONFIG }}"
       - name: Login-to-Azure-with-Federated-Identity
+        if: ${{ !always() }}
+        id: login-to-azure-with-federated-identity
         uses: azure/login@v2
         with:
           client-id: cbbb6866-4d3f-414f-a8ea-317e912b8319
