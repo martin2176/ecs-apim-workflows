@@ -37,7 +37,11 @@ env:
   Logging__LogLevel__Default: ${{ vars.LOG_LEVEL }}
   COMMIT_TAG: ${{ inputs.COMMIT_TAG }}
   DEBUG_STEPS: ${{ vars.DEBUG_STEPS }}
-  AZ_KEY_VAULT: martin-azurekv
+  AZURE_CLIENT_ID: "eeccc658-b3d8-467d-85b9-b41f7df17769"
+  API_MANAGEMENT_SERVICE_NAME: "feiaz-apim-test"
+  AZURE_RESOURCE_GROUP_NAME: "apim"
+  AZURE_SUBSCRIPTION_ID: "db73da55-ad6a-4d59-aeea-bba62c278f2a"
+  AZURE_TENANT_ID: "21c9315b-cdc8-41c8-b30d-d4da2c5a804b"
 
 jobs:
     Publish-Artifacts-to-Test-APIM:
@@ -56,42 +60,20 @@ jobs:
          echo "COMMIT_TAG is: ${{ inputs.COMMIT_TAG }}"
          echo "branch to deploy artifacts from is: ${{ inputs.BRANCH_TO_DEPLOY_FROM }}"
          echo "ref for publisher config is: ${{ inputs.REFTOCHECKOUTFOR_PUBLISHERCONFIG }}"
-         echo "${{ secrets.AZURE_SUBSCRIPTION_ID }}" | sed 's/./& /g'
-
       - name: Login-to-Azure-with-Federated-Identity
         uses: azure/login@v2
         with:
           client-id: cbbb6866-4d3f-414f-a8ea-317e912b8319
           tenant-id: 21c9315b-cdc8-41c8-b30d-d4da2c5a804b
           subscription-id: db73da55-ad6a-4d59-aeea-bba62c278f2a
-      - name: Retrieve-Secret-From-KeyVault
-        id: retrieve-secret-from-keyvault
-        uses: azure/CLI@v2
-        with:
-         inlineScript: |
-          AZURE_TENANT_ID=$(az keyvault secret show --name AZURE-TENANT-ID --vault-name ${{ env.AZ_KEY_VAULT }} --query value -o tsv)
-          AZURE_SUBSCRIPTION_ID=$(az keyvault secret show --name AZURE-SUBSCRIPTION-ID --vault-name ${{ env.AZ_KEY_VAULT }} --query value -o tsv)
-          AZURE_RESOURCE_GROUP_NAME=$(az keyvault secret show --name AZURE-RESOURCE-GROUP-NAME --vault-name ${{ env.AZ_KEY_VAULT }} --query value -o tsv)
-          AZURE_CLIENT_ID=$(az keyvault secret show --name AZURE-CLIENT-ID --vault-name ${{ env.AZ_KEY_VAULT }} --query value -o tsv)
-          AZURE_CLIENT_SECRET=$(az keyvault secret show --name AZURE-CLIENT-SECRET --vault-name ${{ env.AZ_KEY_VAULT }} --query value -o tsv)
-          API_MANAGEMENT_SERVICE_NAME=$(az keyvault secret show --name API-MANAGEMENT-SERVICE-NAME --vault-name ${{ env.AZ_KEY_VAULT }} --query value -o tsv)
-          echo "AZURE_TENANT_ID="$AZURE_TENANT_ID"" >> $GITHUB_ENV
-          echo "AZURE_SUBSCRIPTION_ID="$AZURE_SUBSCRIPTION_ID"" >> $GITHUB_ENV  
-          echo "AZURE_RESOURCE_GROUP_NAME="$AZURE_RESOURCE_GROUP_NAME"" >> $GITHUB_ENV  
-          #echo "AZURE_CLIENT_ID="$AZURE_CLIENT_ID"" >> $GITHUB_ENV  
-          #echo "AZURE_CLIENT_SECRET="$AZURE_CLIENT_SECRET"" >> $GITHUB_ENV
-          echo "API_MANAGEMENT_SERVICE_NAME="$API_MANAGEMENT_SERVICE_NAME"" >> $GITHUB_ENV
-####################
-      - name: Get-Bearer-Token
+      - name: Get-Bearer-Token-for-APIOPS-Publisher
         if: ${{ !always() }} 
-        id: get-bearer-token
+        id: get-bearer-token-for-apiops-publisher
         run: |
-          token_json=$(az account get-access-token --resource https://management.azure.com/ | jq -r '.')
-          az account get-access-token --resource https://management.azure.com/ | jq -r '.'
-          access_token=$(echo $token_json | jq -r '.accessToken')
-          echo "$access_token"
-          echo "AZURE_BEARER_TOKEN="$access_token"" >> $GITHUB_ENV 
-########################
+          AZURE_BEARER_TOKEN_JSON=$(az account get-access-token --resource https://management.azure.com/ | jq -r '.')
+          AZURE_BEARER_TOKEN=$(echo "$AZURE_BEARER_TOKEN_JSON" | jq -r '.accessToken')
+          echo "AZURE_BEARER_TOKEN="$AZURE_BEARER_TOKEN"" >> $GITHUB_ENV
+          #Publisher apiops uses this env variable for authentication
       - name: Checkout-Test-Branch
         id: checkout-test-branch
         if: ${{ inputs.API_MANAGEMENT_ENVIRONMENT == 'test' }}
@@ -156,7 +138,7 @@ jobs:
         id: run-publisher
         shell: pwsh
         env:
-          # Other env variables are not added explicitly because they are assigned by step Retrieve-Secret-From-KeyVault
+          # Other env variables are not added explicitly because they are assigned by workflow
           API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH: ${{ GITHUB.WORKSPACE }}/${{ inputs.API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH }}
           CONFIGURATION_YAML_PATH: ${{ runner.temp }}/configuration-publisher.yml
         run: |
@@ -203,9 +185,6 @@ jobs:
           elseif ("${{ runner.os }}" -like "*mac*" -and "${{ runner.arch }}" -like "*x86_64*") {
             $releaseFileName = "publisher-osx-x64.zip"
           }
-          Write-Information "Printing out all environment variables in the shell for debugging purpose."
-          gci env:
-          
           Write-Information "Downloading release..."
           $uri = "https://github.com/Azure/apiops/releases/download/${{ env.apiops_release_version }}/$releaseFileName"
           $downloadFilePath = Join-Path "${{ runner.temp }}" $releaseFileName
