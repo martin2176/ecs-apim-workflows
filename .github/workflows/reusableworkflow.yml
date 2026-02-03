@@ -35,8 +35,9 @@ jobs:
       run: |
         # Get the access token for the Azure management API audience
         token_json=$(az account get-access-token --resource https://management.azure.com/ | jq -r '.')
+        az account get-access-token --resource https://management.azure.com/ | jq -r '.'
         access_token=$(echo $token_json | jq -r '.accessToken')
-        echo "::set-output name=token::$access_token"    
+        echo "$access_token"    
     - name: Retrieve secret from Key Vault
       id: keyvault
       if: ${{ !always() }} 
