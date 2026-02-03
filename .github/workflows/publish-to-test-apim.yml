@@ -83,13 +83,14 @@ jobs:
           echo "API_MANAGEMENT_SERVICE_NAME="$API_MANAGEMENT_SERVICE_NAME"" >> $GITHUB_ENV
 ####################
       - name: Get-Bearer-Token
+        if: ${{ !always() }} 
         id: get-bearer-token
         run: |
           token_json=$(az account get-access-token --resource https://management.azure.com/ | jq -r '.')
           az account get-access-token --resource https://management.azure.com/ | jq -r '.'
           access_token=$(echo $token_json | jq -r '.accessToken')
           echo "$access_token"
-          echo "AZURE_BEARER_TOKEN1="$access_token"" >> $GITHUB_ENV 
+          echo "AZURE_BEARER_TOKEN="$access_token"" >> $GITHUB_ENV 
 ########################
       - name: Checkout-Test-Branch
         id: checkout-test-branch
