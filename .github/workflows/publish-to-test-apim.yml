@@ -33,7 +33,8 @@ concurrency:
  cancel-in-progress: false
 
 env:
-  apiops_release_version: v7.0.0-alpha.3.0.1
+  apiops_release_version: v7.0.0-beta.1.0.0
+  #apiops_release_version: v7.0.0-alpha.3.0.1
   Logging__LogLevel__Default: ${{ vars.LOG_LEVEL }}
   COMMIT_TAG: ${{ inputs.COMMIT_TAG }}
   DEBUG_STEPS: ${{ vars.DEBUG_STEPS }}
