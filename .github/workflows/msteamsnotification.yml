@@ -17,6 +17,7 @@ on:
       MESSAGE_TITLE:
         required: true
         type: string
+        default: "PR Read for Review"
       MESSAGE_BODY:
         required: true
         type: string          
@@ -58,7 +59,7 @@ jobs:
          \"body\": [
          {
          \"type\": \"TextBlock\",
-         \"text\": \"New Notification Received!\",
+         \"text\": \"\${{ inputs.MESSAGE_TITLE }}\",
          \"size\": \"Medium\",
          \"weight\": \"Bolder\"
          },
