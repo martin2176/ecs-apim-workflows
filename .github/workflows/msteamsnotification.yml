@@ -5,12 +5,6 @@ run-name: MSteams-Notification
 on:
   workflow_call:
     inputs:
-      TITLE:
-        required: true
-        type: string
-      SUBTITLE:
-        required: true
-        type: string
       CHANNEL_NAME:
         required: true
         type: string
@@ -20,7 +14,8 @@ on:
         default: "PR Read for Review"
       MESSAGE_BODY:
         required: true
-        type: string          
+        type: string
+        default: "Pls check with PR tab in the associated Git repo for details on the PR"
 env:
   PR_APPROVAL_CHANNEL: "https://mydigitalspace.webhook.office.com/webhookb2/dd20a723-7134-4339-bc5e-acdd54e923f3@3c2f8435-994c-4552-8fe8-2aec2d0822e4/IncomingWebhook/6423658c1b2b4cbea19f40605a734635/d9490dad-aa85-4c35-b4b0-48b407cf9309/V2F01iTb8JUIgTS8MbHmEFl_3TIC5IVj5vOZegVkWztjg1"
   PROD_DEPLOYMENT_CHANNEL: ""
@@ -59,13 +54,13 @@ jobs:
          \"body\": [
          {
          \"type\": \"TextBlock\",
-         \"text\": \""${{ inputs.MESSAGE_TITLE }}"\",
+         \"text\": \"${{ inputs.MESSAGE_TITLE }}\",
          \"size\": \"Medium\",
          \"weight\": \"Bolder\"
          },
          {
          \"type\": \"TextBlock\",
-         \"text\": \"Here are some details about the event that just occurred.\"
+         \"text\": \"${{ inputs.MESSAGE_BODY }}\"
          }]}}]
          }" > ${{ GITHUB.WORKSPACE }}/body.json
          curl --silent --location --request POST ${{ steps.select-webhook.outputs.webhook }}  --header 'Content-Type: application/json'  --data @${{ GITHUB.WORKSPACE }}/body.json
