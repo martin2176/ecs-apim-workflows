@@ -59,7 +59,7 @@ jobs:
          \"body\": [
          {
          \"type\": \"TextBlock\",
-         \"text\": \"\${{ inputs.MESSAGE_TITLE }}\",
+         \"text\": \""${{ inputs.MESSAGE_TITLE }}"\",
          \"size\": \"Medium\",
          \"weight\": \"Bolder\"
          },
