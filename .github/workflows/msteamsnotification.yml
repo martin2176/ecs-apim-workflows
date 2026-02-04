@@ -28,8 +28,6 @@ jobs:
   Post-Message:
     name: Post-Message-to-"${{ inputs.CHANNEL_NAME }}"
     runs-on: ubuntu-latest
-    outputs:
-      webhook: ${{ steps.select-webhook.outputs.environment }}
     steps:
       - name: Select-Webhook
         id: select-webhook
@@ -68,6 +66,6 @@ jobs:
          \"type\": \"TextBlock\",
          \"text\": \"Here are some details about the event that just occurred.\"
          }]}}]
-         }" > /tmp/out.json
-         cat /tmp/out.json
+         }" > ${{ GITHUB.WORKSPACE }}/body.json
+         curl --silent --location --request POST ${{ steps.select-webhook.outputs.webhook }}  --header 'Content-Type: application/json'  --data @${{ GITHUB.WORKSPACE }}/body.json
         
