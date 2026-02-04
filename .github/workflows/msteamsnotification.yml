@@ -17,7 +17,7 @@ on:
       MESSAGE_TITLE:
         required: true
         type: string
-       MESSAGE_BODY:
+      MESSAGE_BODY:
         required: true
         type: string          
 env:
