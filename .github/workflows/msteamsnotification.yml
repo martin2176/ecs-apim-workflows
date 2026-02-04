@@ -21,7 +21,7 @@ on:
         required: true
         type: string          
 env:
-  PR_APPROVAL_CHANNEL: "https://default3c2f8435994c45528fe82aec2d0822.e4.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/c6d53a5590884229990ae9464f5cc9cc/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=fq7q_6-862vz2xJSr7tq8Tb9gtGdXatw3-4-NvnbM-g"
+  PR_APPROVAL_CHANNEL: "https://mydigitalspace.webhook.office.com/webhookb2/dd20a723-7134-4339-bc5e-acdd54e923f3@3c2f8435-994c-4552-8fe8-2aec2d0822e4/IncomingWebhook/6423658c1b2b4cbea19f40605a734635/d9490dad-aa85-4c35-b4b0-48b407cf9309/V2F01iTb8JUIgTS8MbHmEFl_3TIC5IVj5vOZegVkWztjg1"
   PROD_DEPLOYMENT_CHANNEL: ""
   DEFAULT_CHANNEL: ""
 jobs:
@@ -44,3 +44,34 @@ jobs:
          echo
          echo "webhook="$webhook"" >> $GITHUB_OUTPUT
          echo "$webhook"
+      - name: Set-JSON-Body
+        id: set-json-body
+        run: |
+         cat <<EOF > /tmp/out.json
+         {
+          "type": "message",
+          "attachments": [
+           {
+            "contentType": "application/vnd.microsoft.card.adaptive",
+             "contentUrl": null,
+              "content": {
+               "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                "type": "AdaptiveCard",
+                "version": "1.2",
+                "body": [
+                 {
+                 "type": "TextBlock",
+                 "text": "New Notification Received!",
+                 "size": "Medium",
+                 "weight": "Bolder"
+                 },
+                 {
+                 "type": "TextBlock",
+                  "text": "Here are some details about the event that just occurred."
+                 }
+           ]
+           }
+           }
+           ]
+           }
+         cat /tmp/out.json
