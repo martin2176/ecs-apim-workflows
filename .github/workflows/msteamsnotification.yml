@@ -51,7 +51,7 @@ jobs:
          \"\$schema\": \"http://adaptivecards.io/schemas/adaptive-card.json\",
          \"type\": \"AdaptiveCard\",
          \"version\": \"1.2\",
-         \"msteams\": {\"width\": \"Full\"},
+         \"msteams\": {\"width\": \"auto\"},
          \"body\": [
          {
          \"type\": \"TextBlock\",
@@ -79,6 +79,7 @@ jobs:
          \"\$schema\": \"http://adaptivecards.io/schemas/adaptive-card.json\",
          \"type\": \"AdaptiveCard\",
          \"version\": \"1.2\",
+         \"msteams\": {\"width\": \"full\"},
          \"body\": [
          {
          \"type\": \"TextBlock\",
