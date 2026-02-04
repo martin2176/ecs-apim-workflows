@@ -46,33 +46,28 @@ jobs:
          echo "$webhook"
       - name: Set-JSON-Body
         id: set-json-body
-        run: |
+        run: | 
          cat <<EOF > /tmp/out.json
          {
-          "type": "message",
-          "attachments": [
-           {
-            "contentType": "application/vnd.microsoft.card.adaptive",
-             "contentUrl": null,
-              "content": {
-               "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-                "type": "AdaptiveCard",
-                "version": "1.2",
-                "body": [
-                 {
-                 "type": "TextBlock",
-                 "text": "New Notification Received!",
-                 "size": "Medium",
-                 "weight": "Bolder"
-                 },
-                 {
-                 "type": "TextBlock",
-                  "text": "Here are some details about the event that just occurred."
-                 }
-           ]
-           }
-           }
-           ]
-           }
+         "type": "message",
+         "attachments": [
+         {
+         "contentType": "application/vnd.microsoft.card.adaptive",
+         "contentUrl": null,
+         "content": {
+         "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+         "type": "AdaptiveCard",
+         "version": "1.2",
+         "body": [
+         {
+         "type": "TextBlock",
+         "text": "New Notification Received!",
+         "size": "Medium",
+         "weight": "Bolder"
+         },
+         {
+         "type": "TextBlock",
+         "text": "Here are some details about the event that just occurred."
+         }]}}]}
          EOF 
          cat /tmp/out.json
