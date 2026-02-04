@@ -56,15 +56,6 @@ jobs:
           fi
           echo "title=${{ inputs.REFERENCE_NUMBER }}" >> "$GITHUB_OUTPUT"
           echo "number=$(gh milestone list  -q "${{ inputs.REFERENCE_NUMBER }}" --state all --json number,title --jq '.[] | select(.title == "${{ inputs.REFERENCE_NUMBER }}") | .number')" >> "$GITHUB_OUTPUT"
-          
-      - name: Create-Or-Get-MileStone1
-        id: create-or-get-milestone1
-        if: ${{ !always() }}
-        uses: sv-tools/create-milestone-action@v2.0.0
-        with:
-         token: ${{ secrets.GITHUB_TOKEN }}
-         title: "${{ env.MILESTONE_TITLE }}"
-         description: "This milestone captures all PRs and Issues for the ticket ${{ inputs.REFERENCE_NUMBER }}"
       - name: Get-Current-Time
         id: get-current-time
         run: |
@@ -78,7 +69,6 @@ jobs:
          echo "PR milestone number is ${{ steps.create-or-get-milestone.outputs.number }}"
          echo "PR milestone name is ${{ steps.create-or-get-milestone.outputs.title }}"
       - name: Create-PR-For-Merging-To-Artifacts-Branch
-        if: ${{ !always() }}
         env:
          GH_TOKEN: ${{ github.token }}
         id: create-pr-for-squash-merging-to-artifacts-branch
