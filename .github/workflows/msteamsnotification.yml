@@ -62,7 +62,8 @@ jobs:
          },
          {
          \"type\": \"TextBlock\",
-         \"text\": \"${{ inputs.MESSAGE_BODY }}\"
+         \"text\": \"${{ inputs.MESSAGE_BODY }}\",
+         \"wrap\": true
          }]}}]
          }" > ${{ GITHUB.WORKSPACE }}/body.json
          curl --silent --location --request POST ${{ steps.select-webhook.outputs.webhook }}  --header 'Content-Type: application/json'  --data @${{ GITHUB.WORKSPACE }}/body.json
