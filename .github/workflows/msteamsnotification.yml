@@ -35,8 +35,8 @@ jobs:
         id: select-webhook
         run: |
          webhook=$(case "${{ inputs.CHANNEL_NAME }}" in
-         "${{ env.PR_APPROVAL_CHANNEL }}") echo 1;;
-         "${{ env.PROD_DEPLOYMENT_CHANNEL }}") echo 2;;
+         "PR_APPROVAL_CHANNEL") echo 1;;
+         "PROD_DEPLOYMENT_CHANNEL") echo 2;;
          *) echo 3;;
          esac)
          echo
