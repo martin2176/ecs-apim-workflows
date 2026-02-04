@@ -1,0 +1,46 @@
+#Reusable workflow to publish artifacts to Test APIM instance
+name: MSteams-Notification
+run-name: MSteams-Notification
+#Author martin francis kallukalam
+on:
+  workflow_call:
+    inputs:
+      TITLE:
+        required: true
+        type: string
+      SUBTITLE:
+        required: true
+        type: string
+      CHANNEL_NAME:
+        required: true
+        type: string
+      MESSAGE_TITLE:
+        required: true
+        type: string
+       MESSAGE_BODY:
+        required: true
+        type: string          
+env:
+  PR_APPROVAL_CHANNEL: "https://default3c2f8435994c45528fe82aec2d0822.e4.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/c6d53a5590884229990ae9464f5cc9cc/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=fq7q_6-862vz2xJSr7tq8Tb9gtGdXatw3-4-NvnbM-g"
+  PROD_DEPLOYMENT_CHANNEL: ""
+jobs:
+  Post-Message:
+    name: Post-Message-to-"${{ inputs.CHANNEL_NAME }}"
+    runs-on: ubuntu-latest
+    outputs:
+      webhook: ${{ steps.select-webhook.outputs.environment }}
+    steps:
+      - name: Select-Webhook
+        id: select-webhook
+        run: |
+          webhook=$(
+            echo "${{
+              case "${{ inputs.CHANNEL_NAME }}"
+                when 'PR_APPROVAL_CHANNEL' then '${{ env.PR_APPROVAL_CHANNEL }}'
+                when 'PROD_DEPLOYMENT_CHANNEL' then '${{ env.PROD_DEPLOYMENT_CHANNEL }}'
+                else '${{ env.DEFAULT_CHANNEL }}'
+              end
+            }}"
+          )
+          echo "webhook="$webhook"" >> $GITHUB_OUTPUT
+          echo "$webhook"
