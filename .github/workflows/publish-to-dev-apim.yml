@@ -32,7 +32,8 @@ on:
 # "publish-all-artifacts-in-repo-to-latest-commit"
 # "publish-all-artifacts-in-repo-to-specific-commit"
 env:
-  apiops_release_version: v7.0.0-alpha.3.0.1
+  apiops_release_version: v7.0.0-beta.1.0.0
+  #apiops_release_version: v7.0.0-alpha.3.0.1
   Logging__LogLevel__Default: ${{ vars.LOG_LEVEL }}
   COMMITID: ${{ inputs.COMMITID }}
   DEBUG_STEPS: ${{ vars.DEBUG_STEPS }}
