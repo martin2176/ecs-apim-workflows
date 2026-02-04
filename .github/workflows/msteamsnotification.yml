@@ -51,12 +51,13 @@ jobs:
          \"\$schema\": \"http://adaptivecards.io/schemas/adaptive-card.json\",
          \"type\": \"AdaptiveCard\",
          \"version\": \"1.2\",
-         \"msteams\": {\"width\": \"auto\"},
+         \"msteams\": {\"width\": \"full\"},
          \"body\": [
          {
          \"type\": \"TextBlock\",
          \"text\": \"${{ inputs.MESSAGE_TITLE }}\",
          \"size\": \"Medium\",
+         \"wrap\": true,
          \"weight\": \"Bolder\"
          },
          {
