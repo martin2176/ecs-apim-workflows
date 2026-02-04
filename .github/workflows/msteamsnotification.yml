@@ -34,10 +34,13 @@ jobs:
       - name: Select-Webhook
         id: select-webhook
         run: |
-         webhook=$(case "Hello" in
-         "${{ env.PR_APPROVAL_CHANNEL }}") echo hello;;
+         webhook=$(case "${{ inputs.CHANNEL_NAME }}" in
+         "${{ env.PR_APPROVAL_CHANNEL }}") echo 1;;
          "${{ env.PROD_DEPLOYMENT_CHANNEL }}") echo 2;;
-         "${{ env.DEFAULT_CHANNEL }}") echo 3;;
+         *) echo 3;;
          esac)
+         echo
+         echo
+         echo
          echo "webhook="$webhook"" >> $GITHUB_OUTPUT
          echo "$webhook"
