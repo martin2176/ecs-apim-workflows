@@ -18,8 +18,9 @@ on:
         default: "Pls check with PR tab in the associated Git repo for details on the PR"
 env:
   PR_APPROVAL_CHANNEL: "https://mydigitalspace.webhook.office.com/webhookb2/dd20a723-7134-4339-bc5e-acdd54e923f3@3c2f8435-994c-4552-8fe8-2aec2d0822e4/IncomingWebhook/6423658c1b2b4cbea19f40605a734635/d9490dad-aa85-4c35-b4b0-48b407cf9309/V2F01iTb8JUIgTS8MbHmEFl_3TIC5IVj5vOZegVkWztjg1"
-  PROD_DEPLOYMENT_CHANNEL: ""
-  DEFAULT_CHANNEL: ""
+  PROD_DEPLOYMENT_CHANNEL: "https://mydigitalspace.webhook.office.com/webhookb2/dd20a723-7134-4339-bc5e-acdd54e923f3@3c2f8435-994c-4552-8fe8-2aec2d0822e4/IncomingWebhook/2a291b7063694bd9a45462a4f827989e/d9490dad-aa85-4c35-b4b0-48b407cf9309/V2oEZHj6SpUSykWyIaTPagGnvCK406K3-2Jm7qMsvwD_41"
+  TEST_DEPLOYMENT_CHANNEL: "https://mydigitalspace.webhook.office.com/webhookb2/dd20a723-7134-4339-bc5e-acdd54e923f3@3c2f8435-994c-4552-8fe8-2aec2d0822e4/IncomingWebhook/55a6ee17a92348c698bcc8e092fbaf89/d9490dad-aa85-4c35-b4b0-48b407cf9309/V2-gMTYFHhFYt4MMxtjqKlcOmYdhIxtBIkf5eEFGDZQB41"
+  DEFAULT_CHANNEL: "https://mydigitalspace.webhook.office.com/webhookb2/dd20a723-7134-4339-bc5e-acdd54e923f3@3c2f8435-994c-4552-8fe8-2aec2d0822e4/IncomingWebhook/82336086b76b4c81ae98d1a458f97062/d9490dad-aa85-4c35-b4b0-48b407cf9309/V2jogC3mFVbSHA96fnlExNpc8nNWTwl5GKvPI4XqENKxM1"
 jobs:
   Post-Message:
     name: Post-Message-to-"${{ inputs.CHANNEL_NAME }}"
@@ -30,6 +31,7 @@ jobs:
         run: |
          webhook=$(case "${{ inputs.CHANNEL_NAME }}" in
          "PR_APPROVAL_CHANNEL") echo ${{ env.PR_APPROVAL_CHANNEL }};;
+         "TEST_DEPLOYMENT_CHANNEL") echo ${{ env.TEST_DEPLOYMENT_CHANNEL }};;
          "PROD_DEPLOYMENT_CHANNEL") echo ${{ env.PROD_DEPLOYMENT_CHANNEL }};;
          *) echo ${{ env.DEFAULT_CHANNEL }};;
          esac)
