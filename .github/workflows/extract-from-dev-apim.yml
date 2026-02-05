@@ -83,8 +83,8 @@ jobs:
           AZURE_BEARER_TOKEN=$(echo "$AZURE_BEARER_TOKEN_JSON" | jq -r '.accessToken')
           echo "AZURE_BEARER_TOKEN="$AZURE_BEARER_TOKEN"" >> $GITHUB_ENV
           #Publisher apiops uses this env variable for authentication    
-      - name: Checkout-Configuration-File
-        id: checkout-configuration-file
+      - name: Checkout-Extractor-Config-Branch
+        id: checkout-extractor-config-branch
         uses: actions/checkout@v6
         with:
          ref: '${{ inputs.BRANCH_FOR_EXTRACTOR_CONFIG }}'
