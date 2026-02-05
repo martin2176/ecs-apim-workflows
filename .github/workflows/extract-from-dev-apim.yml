@@ -14,7 +14,7 @@ on:
       REFERENCE_NUMBER:
         required: true
         type: string
-      REFTOCHECKOUTFOR_EXTRACTORCONFIG:
+      BRANCH_FOR_EXTRACTOR_CONFIG:
         required: true
         type: string
       BASE_BRANCH_FOR_PR:
@@ -87,7 +87,7 @@ jobs:
         id: checkout-configuration-file
         uses: actions/checkout@v6
         with:
-         ref: '${{ inputs.REFTOCHECKOUTFOR_EXTRACTORCONFIG }}'
+         ref: '${{ inputs.BRANCH_FOR_EXTRACTOR_CONFIG }}'
       - name: Print-Input-From-Calling-Workflow
         id: print-input-from-callingworkflow
         shell: bash
@@ -200,7 +200,7 @@ jobs:
     steps:
       - name: Checkout-Artifacts-Branch
         id: checkout-artifacts-branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
          ref: '${{ env.BASE_BRANCH_FOR_PR }}'
          fetch-depth: 1
@@ -208,20 +208,30 @@ jobs:
         
       - name: Download-Artifacts-From-Job
         id: download-artifacts-from-job
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         env:
          API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH: apimartifacts
         with:
           name: artifact-extract-from-dev-apim-instance
           path: "${{ GITHUB.WORKSPACE }}/${{ env.API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH }}"
-
+      - name: Install-GH-Milestone-Extension
+        id: install-gh-milestone-extension
+        run: |
+         echo "Installing milestone gh extension."
+         gh extension install valeriobelli/gh-milestone
       - name: Create-Or-Get-MileStone
         id: create-or-get-milestone
-        uses: sv-tools/create-milestone-action@v2.0.0
-        with:
-         token: ${{ secrets.GITHUB_TOKEN }}
-         title: "${{ env.MILESTONE_TITLE }}"
-         description: "This milestone captures all PRs and Issues for the ticket ${{ inputs.REFERENCE_NUMBER }}"
+        continue-on-error: false
+        run: |
+          MILESTONE_COUNT=$(gh milestone list  --state all -q "${{ inputs.REFERENCE_NUMBER }}" --json title |jq '.[] | select(.title == "${{ inputs.REFERENCE_NUMBER }}")'  |jq -s '[.[]]'  | jq '. | length')
+          if [ "$MILESTONE_COUNT" -eq 1 ]; then
+           echo "Milestone ${{ inputs.REFERENCE_NUMBER }} exist.Continuing without creating a new milestone."
+          else
+           echo "Milestone doesnot exist.Creating a new milestone ${{ inputs.REFERENCE_NUMBER }}"
+           gh milestone create --title "${{ inputs.REFERENCE_NUMBER }}"
+          fi
+          echo "title=${{ inputs.REFERENCE_NUMBER }}" >> "$GITHUB_OUTPUT"
+          echo "number=$(gh milestone list  -q "${{ inputs.REFERENCE_NUMBER }}" --state all --json number,title --jq '.[] | select(.title == "${{ inputs.REFERENCE_NUMBER }}") | .number')" >> "$GITHUB_OUTPUT"        
       - name: Get-Current-Time
         id: get-current-time
         run: |
