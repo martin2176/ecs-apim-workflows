@@ -73,8 +73,8 @@ jobs:
           AZURE_BEARER_TOKEN=$(echo "$AZURE_BEARER_TOKEN_JSON" | jq -r '.accessToken')
           echo "AZURE_BEARER_TOKEN="$AZURE_BEARER_TOKEN"" >> $GITHUB_ENV
           #Publisher apiops uses this env variable for authentication         
-      - name: Checkout-Dev-Branch
-        id: checkout-dev-branch
+      - name: Checkout-Publisher-Config-Branch
+        id: checkout-publisher-config-branch
         if: ${{ inputs.API_MANAGEMENT_ENVIRONMENT == 'dev' }}
         uses: actions/checkout@v6
         with:
