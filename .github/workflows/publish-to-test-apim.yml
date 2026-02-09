@@ -133,13 +133,12 @@ jobs:
           Write-Information "Printing out all environment variables in the shell for debugging purpose"
           gci env:
       - name: Run-Publisher
-        #if: ${{ !always() }} 
         id: run-publisher
         shell: pwsh
         env:
           # Other env variables are not added explicitly because they are assigned by workflow
           API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH: ${{ GITHUB.WORKSPACE }}/${{ inputs.API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH }}
-          #CONFIGURATION_YAML_PATH: ${{ runner.temp }}/configuration-publisher.yml
+          CONFIGURATION_YAML_PATH: ${{ runner.temp }}/configuration-publisher.yml
         run: |
           $publish_artifacts_choice="${{ inputs.PUBLISH_ARTIFACTS_CHOICE }}"
           if ($publish_artifacts_choice -eq "publish-delta-artifacts-in-latest-commit") 
@@ -200,7 +199,9 @@ jobs:
             & chmod +x "$executableFilePath"
             if ($LASTEXITCODE -ne 0) { throw "Setting file permissions failed."}
           }
-
+          echo "---------------------PUBLISHER CONFIGURATION -------------------------"
+          cat $env:CONFIGURATION_YAML_PATH
+          echo "----------------------------------------------------------------------"
           Write-Information "Running publisher..."
           & "$executableFilePath"              
           if ($LASTEXITCODE -ne 0) { throw "Running publisher failed."}
