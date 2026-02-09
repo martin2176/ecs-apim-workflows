@@ -118,7 +118,7 @@ jobs:
         if: ${{ env.DEBUG_STEPS == 'true' && (inputs.PUBLISH_ARTIFACTS_CHOICE == 'publish-delta-artifacts-in-latest-commit' || inputs.PUBLISH_ARTIFACTS_CHOICE == 'publish-delta-artifacts-in-specific-commit') }}
         run:  |
          echo "Listing files changed in the commit"
-         git diff --compact-summary --name-status -B -M -C ${COMMIT_TAG}^ ${COMMIT_TAG}
+         git diff --compact-summary --name-status -B -M ${COMMIT_TAG}^ ${COMMIT_TAG}
       - name: Convert-Tag-To-CommitID
         id: convert-tag-to-commitid
         run:  |
