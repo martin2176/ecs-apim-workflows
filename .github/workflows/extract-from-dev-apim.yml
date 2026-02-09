@@ -46,6 +46,7 @@ env:
   AZURE_RESOURCE_GROUP_NAME: "apim"
   AZURE_SUBSCRIPTION_ID: "db73da55-ad6a-4d59-aeea-bba62c278f2a"
   AZURE_TENANT_ID: "21c9315b-cdc8-41c8-b30d-d4da2c5a804b"
+  GH_TOKEN: ${{ github.token }}
 jobs:
   Print-User-Selections:
     name: Print-User-Selections
