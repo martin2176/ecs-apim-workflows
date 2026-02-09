@@ -118,7 +118,7 @@ jobs:
         if: ${{ env.DEBUG_STEPS == 'true' && (inputs.PUBLISH_ARTIFACTS_CHOICE == 'publish-delta-artifacts-in-latest-commit' || inputs.PUBLISH_ARTIFACTS_CHOICE == 'publish-delta-artifacts-in-specific-commit') }}
         run:  |
          echo "Listing files changed in the commit"
-         git diff --compact-summary --name-status -B -M -C ${COMMITID}^ ${COMMITID}
+         git diff --compact-summary --name-status -B -M ${COMMITID}^ ${COMMITID}
         #run: git diff --compact-summary ${COMMITID}^ ${COMMITID}
       - name: Print-PS-Environment-Variables
         if: ${{ env.DEBUG_STEPS == 'true' }} 
