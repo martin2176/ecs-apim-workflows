@@ -34,7 +34,6 @@ on:
 #Extract All APIM Artifacts
 env:
   apiops_release_version: v7.0.0-beta.1.0.0
-  #apiops_release_version: v7.0.0-alpha.3.0.1
   Logging__LogLevel__Default: ${{ vars.LOG_LEVEL }}
   DEBUG_STEPS: ${{ vars.DEBUG_STEPS }}
   CONFIGURATION_EXTRACTOR_YAML: ${{ inputs.CONFIGURATION_YAML_PATH }}
@@ -47,6 +46,7 @@ env:
   AZURE_SUBSCRIPTION_ID: "db73da55-ad6a-4d59-aeea-bba62c278f2a"
   AZURE_TENANT_ID: "21c9315b-cdc8-41c8-b30d-d4da2c5a804b"
   GH_TOKEN: ${{ github.token }}
+  # Logging__LogLevel__Default & DEBUG_STEPS should be repository variables
 jobs:
   Print-User-Selections:
     name: Print-User-Selections
@@ -178,8 +178,6 @@ jobs:
 
           Write-Information "Execution complete."
           ls -R $env:API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH || true
-
-
       - name: Upload-Artifact
         id: upload-artifact
         uses: actions/upload-artifact@v6
@@ -199,7 +197,6 @@ jobs:
     permissions:
      contents: write
      pull-requests: write
-
     steps:
       - name: Checkout-Artifacts-Branch
         id: checkout-artifacts-branch
@@ -208,7 +205,6 @@ jobs:
          ref: '${{ env.BASE_BRANCH_FOR_PR }}'
          fetch-depth: 1
          fetch-tags: 'false'
-        
       - name: Download-Artifacts-From-Job
         id: download-artifacts-from-job
         uses: actions/download-artifact@v6
@@ -239,7 +235,6 @@ jobs:
         id: get-current-time
         run: |
          echo "PR_OPEN_DATE=$(TZ="US/Eastern" date  +"EST-%Y-%m-%d-%H-%M-%S")" >> "$GITHUB_OUTPUT"
-         
       - name: Create-PR-For-Merging-To-Artifacts-Branch
         id: create-pr-for-merging-to-artifacts-branch
         uses: peter-evans/create-pull-request@v8
