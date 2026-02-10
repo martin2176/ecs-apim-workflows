@@ -34,7 +34,6 @@ concurrency:
 
 env:
   apiops_release_version: v7.0.0-beta.1.0.0
-  #apiops_release_version: v7.0.0-alpha.3.0.1
   Logging__LogLevel__Default: ${{ vars.LOG_LEVEL }}
   COMMIT_TAG: ${{ inputs.COMMIT_TAG }}
   DEBUG_STEPS: ${{ vars.DEBUG_STEPS }}
@@ -43,7 +42,7 @@ env:
   AZURE_RESOURCE_GROUP_NAME: "apim"
   AZURE_SUBSCRIPTION_ID: "db73da55-ad6a-4d59-aeea-bba62c278f2a"
   AZURE_TENANT_ID: "21c9315b-cdc8-41c8-b30d-d4da2c5a804b"
-
+  # Logging__LogLevel__Default & DEBUG_STEPS should be repository variables
 jobs:
     Publish-Artifacts-to-Test-APIM:
      name: Publish-Artifacts-to-Test-APIM-From-Tag-${{ inputs.COMMIT_TAG }}
@@ -58,7 +57,7 @@ jobs:
          echo "publishartifactschoice is ${{ inputs.PUBLISH_ARTIFACTS_CHOICE }}"
          echo "COMMIT_TAG is: ${{ inputs.COMMIT_TAG }}"
          echo "branch to deploy artifacts from is: ${{ inputs.BRANCH_TO_DEPLOY_FROM }}"
-         echo "ref for publisher config is: ${{ inputs.BRANCH_FOR_PUBLISHER_CONFIG }}"
+         echo "branch for publisher config is: ${{ inputs.BRANCH_FOR_PUBLISHER_CONFIG }}"
       - name: Login-to-Azure-with-Federated-Identity
         id: login-to-azure-with-federated-identity
         uses: azure/login@v2
@@ -100,7 +99,7 @@ jobs:
         with:
          ref: '${{ inputs.COMMIT_TAG }}' ## when using specific commit such as deploying a rel tag or a specific commitid
          fetch-tags: 'true'
-         fetch-depth: 50
+         fetch-depth: 200
       - name: List-Top-Level-Contents-Of-Artifacts-Folder
         id: list-top-level-contents-of-artifacts-folder
         if: ${{ env.DEBUG_STEPS == 'true' }}
@@ -136,7 +135,7 @@ jobs:
         id: run-publisher
         shell: pwsh
         env:
-          # Other env variables are not added explicitly because they are assigned by workflow
+          #Other env variables are not added explicitly because they are assigned by workflow
           API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH: ${{ GITHUB.WORKSPACE }}/${{ inputs.API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH }}
           CONFIGURATION_YAML_PATH: ${{ runner.temp }}/configuration-publisher.yml
         run: |
