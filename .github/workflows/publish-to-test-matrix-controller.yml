@@ -101,5 +101,3 @@ jobs:
       API_MANAGEMENT_ENVIRONMENT: test
       BRANCH_TO_DEPLOY_FROM: ${{ inputs.BRANCH_TO_DEPLOY_FROM }} 
       BRANCH_FOR_PUBLISHER_CONFIG: main
-     secrets: 
-      inherit 
