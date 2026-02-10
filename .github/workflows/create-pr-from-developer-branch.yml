@@ -35,7 +35,7 @@ jobs:
     steps:
       - name: Checkout-Artifacts-Branch
         id: checkout-artifacts-branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
          ref: '${{ env.BASE_BRANCH_FOR_PR }}'
          fetch-depth: 10
