@@ -26,14 +26,13 @@ on:
       BRANCH_FOR_PUBLISHER_CONFIG:
         required: true
         type: string
-# PUBLISH_ARTIFACTS_CHOICE has possible three values listed below
+# PUBLISH_ARTIFACTS_CHOICE has four three values listed below
 # "publish-delta-artifacts-in-latest-commit"
 # "publish-delta-artifacts-in-specific-commit"
 # "publish-all-artifacts-in-repo-to-latest-commit"
 # "publish-all-artifacts-in-repo-to-specific-commit"
 env:
   apiops_release_version: v7.0.0-beta.1.0.0
-  #apiops_release_version: v7.0.0-alpha.3.0.1
   Logging__LogLevel__Default: ${{ vars.LOG_LEVEL }}
   COMMITID: ${{ inputs.COMMITID }}
   DEBUG_STEPS: ${{ vars.DEBUG_STEPS }}
@@ -41,7 +40,8 @@ env:
   API_MANAGEMENT_SERVICE_NAME: "feiaz-apim-dev"
   AZURE_RESOURCE_GROUP_NAME: "apim"
   AZURE_SUBSCRIPTION_ID: "db73da55-ad6a-4d59-aeea-bba62c278f2a"
-  AZURE_TENANT_ID: "21c9315b-cdc8-41c8-b30d-d4da2c5a804b"  
+  AZURE_TENANT_ID: "21c9315b-cdc8-41c8-b30d-d4da2c5a804b"
+  # Logging__LogLevel__Default & DEBUG_STEPS should be repository variables
 jobs:
     Publish-Artifacts-to-Dev-APIM:
      name: Publish-Artifacts-to-Dev-APIM-From-CommitID-${{ inputs.COMMITID }}
@@ -58,7 +58,7 @@ jobs:
          echo "commitid is: ${COMMITID}"
          #branch name as commitid means everything in the branch. ie. branch is checked out as ref in checkout step
          echo "branch to deploy artifacts from is: ${{ inputs.BRANCH_TO_DEPLOY_FROM }}"
-         echo "ref for publisher config is: ${{ inputs.BRANCH_FOR_PUBLISHER_CONFIG }}"
+         echo "branch for publisher config is: ${{ inputs.BRANCH_FOR_PUBLISHER_CONFIG }}"
       - name: Login-to-Azure-with-Federated-Identity
         id: login-to-azure-with-federated-identity
         uses: azure/login@v2
@@ -119,7 +119,6 @@ jobs:
         run:  |
          echo "Listing files changed in the commit"
          git diff --compact-summary --name-status -B -M ${COMMITID}^ ${COMMITID}
-        #run: git diff --compact-summary ${COMMITID}^ ${COMMITID}
       - name: Print-PS-Environment-Variables
         if: ${{ env.DEBUG_STEPS == 'true' }} 
         id: printpsenvironmentvariables
@@ -129,11 +128,10 @@ jobs:
           gci env:      
       - name: Run-Publisher
         id: run-publisher
-        #if: ${{ always() }}
         shell: pwsh
         env:
           API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH: ${{ GITHUB.WORKSPACE }}/${{ inputs.API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH }}
-          #CONFIGURATION_YAML_PATH: ${{ runner.temp }}/configuration-publisher.yml
+          CONFIGURATION_YAML_PATH: ${{ runner.temp }}/configuration-publisher.yml
         run: |
           $publish_artifacts_choice="${{ inputs.PUBLISH_ARTIFACTS_CHOICE }}"
           if ($publish_artifacts_choice -eq "publish-delta-artifacts-in-latest-commit") 
