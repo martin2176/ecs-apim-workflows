@@ -26,27 +26,26 @@ on:
       BRANCH_FOR_PUBLISHER_CONFIG:
         required: true
         type: string
-# PUBLISH_ARTIFACTS_CHOICE has one allowed value when deploying to test
+# PUBLISH_ARTIFACTS_CHOICE has one allowed value when deploying to prod
 # "publish-delta-artifacts-in-specific-commit"
 concurrency:
- group: publish-to-test-apim-instance-matrixjob
+ group: publish-to-prod-apim-instance-matrixjob
  cancel-in-progress: false
 
 env:
   apiops_release_version: v7.0.0-beta.1.0.0
-  #apiops_release_version: v7.0.0-alpha.3.0.1
   Logging__LogLevel__Default: ${{ vars.LOG_LEVEL }}
   COMMIT_TAG: ${{ inputs.COMMIT_TAG }}
   DEBUG_STEPS: ${{ vars.DEBUG_STEPS }}
   AZURE_CLIENT_ID: "cbbb6866-4d3f-414f-a8ea-317e912b8319"
-  API_MANAGEMENT_SERVICE_NAME: "feiaz-apim-test"
+  API_MANAGEMENT_SERVICE_NAME: "feiaz-apim-prod"
   AZURE_RESOURCE_GROUP_NAME: "apim"
   AZURE_SUBSCRIPTION_ID: "db73da55-ad6a-4d59-aeea-bba62c278f2a"
   AZURE_TENANT_ID: "21c9315b-cdc8-41c8-b30d-d4da2c5a804b"
-
+  # Logging__LogLevel__Default & DEBUG_STEPS should be repository variables
 jobs:
-    Publish-Artifacts-to-Test-APIM:
-     name: Publish-Artifacts-to-Test-APIM-From-Tag-${{ inputs.COMMIT_TAG }}
+    Publish-Artifacts-to-Prod-APIM:
+     name: Publish-Artifacts-to-Prod-APIM-From-Tag-${{ inputs.COMMIT_TAG }}
      runs-on: ubuntu-latest
      steps:
       - name: Print-Input-From-Calling-Workflow
@@ -58,7 +57,7 @@ jobs:
          echo "publishartifactschoice is ${{ inputs.PUBLISH_ARTIFACTS_CHOICE }}"
          echo "COMMIT_TAG is: ${{ inputs.COMMIT_TAG }}"
          echo "branch to deploy artifacts from is: ${{ inputs.BRANCH_TO_DEPLOY_FROM }}"
-         echo "ref for publisher config is: ${{ inputs.BRANCH_FOR_PUBLISHER_CONFIG }}"
+         echo "branch for publisher config is: ${{ inputs.BRANCH_FOR_PUBLISHER_CONFIG }}"
       - name: Login-to-Azure-with-Federated-Identity
         id: login-to-azure-with-federated-identity
         uses: azure/login@v2
@@ -75,13 +74,13 @@ jobs:
           #Publisher apiops uses this env variable for authentication
       - name: Checkout-Publisher-Config-Branch
         id: checkout-publisher-config-branch
-        if: ${{ inputs.API_MANAGEMENT_ENVIRONMENT == 'test' }}
+        if: ${{ inputs.API_MANAGEMENT_ENVIRONMENT == 'prod' }}
         uses: actions/checkout@v6
         with:
          ref: '${{ inputs.BRANCH_FOR_PUBLISHER_CONFIG }}'
       - name: Copy-ConfigurationOverride-File
         id: copy-configurationoverride-file
-        if: ${{ inputs.API_MANAGEMENT_ENVIRONMENT == 'test' }}
+        if: ${{ inputs.API_MANAGEMENT_ENVIRONMENT == 'prod' }}
         run: |
          echo "Copying override configuration file to runner.temp"
          if [ -f "${{ inputs.CONFIGURATION_YAML_PATH }}" ]
@@ -100,7 +99,7 @@ jobs:
         with:
          ref: '${{ inputs.COMMIT_TAG }}' ## when using specific commit such as deploying a rel tag or a specific commitid
          fetch-tags: 'true'
-         fetch-depth: 50
+         fetch-depth: 200
       - name: List-Top-Level-Contents-Of-Artifacts-Folder
         id: list-top-level-contents-of-artifacts-folder
         if: ${{ env.DEBUG_STEPS == 'true' }}
