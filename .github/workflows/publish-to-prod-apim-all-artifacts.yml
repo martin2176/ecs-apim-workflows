@@ -93,9 +93,7 @@ jobs:
         id: checkout-artifacts-branch
         uses: actions/checkout@v6
         with:
-         ref: '${{ inputs.COMMITID }}' ## when using specific commit such as deploying a rel tag or a specific commitid
-         fetch-tags: 'true'
-         fetch-depth: 200
+         ref: '${{ inputs.COMMITID }}' ## when using specific commit such as deploying a rel tag or a specific commitid or branch name when deploying all artifacts
       - name: List-Top-Level-Contents-Of-Artifacts-Folder
         id: list-top-level-contents-of-artifacts-folder
         if: ${{ env.DEBUG_STEPS == 'true' }}
@@ -114,12 +112,6 @@ jobs:
         run:  |
          echo "Listing files changed in the commit"
          git diff --compact-summary --name-status -B -M ${COMMITID}^ ${COMMITID}
-      - name: Convert-Tag-To-CommitID
-        id: convert-tag-to-commitid
-        run:  |
-         COMMITID="$(git rev-list -n 1 ${{ inputs.COMMITID }})"
-         echo "CommitID is $COMMITID"
-         echo "COMMITID=${COMMITID}" >> "$GITHUB_ENV"
       - name: Print-PS-Environment-Variables
         if: ${{ env.DEBUG_STEPS == 'true' }} 
         id: printpsenvironmentvariables
