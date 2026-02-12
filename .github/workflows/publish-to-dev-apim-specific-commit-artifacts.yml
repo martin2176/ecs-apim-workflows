@@ -94,6 +94,7 @@ jobs:
         uses: actions/checkout@v6
         with:
          ref: '${{ inputs.COMMITID }}' ## when using specific commit such as deploying a rel tag or a specific commitid or branch name when deploying all artifacts
+         fetch-depth: 200
       - name: List-Top-Level-Contents-Of-Artifacts-Folder
         id: list-top-level-contents-of-artifacts-folder
         if: ${{ env.DEBUG_STEPS == 'true' }}
