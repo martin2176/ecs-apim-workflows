@@ -95,7 +95,7 @@ jobs:
   Notify-MS-Teams:
      name: Notify-MS-Teams
      needs: Create-Pull-Request
-     uses: martin2176/ecs-apim-workflows/.github/workflows/msteamsnotification.yml@main
+     uses: martin2176/ecs-apim-workflows/.github/workflows/msteams-notification.yml@main
      with:
       CHANNEL_NAME: "PR_APPROVAL_CHANNEL"
       MESSAGE_TITLE: "PR Opened by: ${{ github.triggering_actor }} is ready for review."
