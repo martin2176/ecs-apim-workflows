@@ -108,6 +108,7 @@ jobs:
          echo "Listing all files in the repo"
          git ls-tree -r --name-only ${COMMITID}
       - name: List-Delta-Artifacts-Files-Captured-In-the-Commit
+        continue-on-error: true
         id: list-delta-artifact-files-changes-captured-in-the-commit
         if: ${{ env.DEBUG_STEPS == 'true' && (inputs.PUBLISH_ARTIFACTS_CHOICE == 'publish-delta-artifacts-in-latest-commit' || inputs.PUBLISH_ARTIFACTS_CHOICE == 'publish-delta-artifacts-in-specific-commit') }}
         run:  |
