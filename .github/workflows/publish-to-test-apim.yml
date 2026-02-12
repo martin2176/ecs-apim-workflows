@@ -55,7 +55,7 @@ jobs:
          echo "configurationyamlpath is ${{ inputs.CONFIGURATION_YAML_PATH }}"
          echo "apimanagementserviceoutputfolderpath is ${{ inputs.API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH }}"
          echo "publishartifactschoice is ${{ inputs.PUBLISH_ARTIFACTS_CHOICE }}"
-         echo "COMMIT_TAG is: ${{ inputs.COMMIT_TAG }}"
+         echo "commit_tag is: ${{ inputs.COMMIT_TAG }}"
          echo "branch to deploy artifacts from is: ${{ inputs.BRANCH_TO_DEPLOY_FROM }}"
          echo "branch for publisher config is: ${{ inputs.BRANCH_FOR_PUBLISHER_CONFIG }}"
       - name: Login-to-Azure-with-Federated-Identity
