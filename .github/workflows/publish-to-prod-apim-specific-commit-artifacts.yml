@@ -112,7 +112,13 @@ jobs:
         if: ${{ env.DEBUG_STEPS == 'true' && (inputs.PUBLISH_ARTIFACTS_CHOICE == 'publish-delta-artifacts-in-latest-commit' || inputs.PUBLISH_ARTIFACTS_CHOICE == 'publish-delta-artifacts-in-specific-commit') }}
         run:  |
          echo "Listing files changed in the commit"
-         git diff --compact-summary --name-status -B -M "${COMMITID}"^ "${COMMITID}"
+         git diff --compact-summary --name-status -B -M 575e0e06c5a6b8dd6eebc74a48f4d90a5d2bb68e^ 575e0e06c5a6b8dd6eebc74a48f4d90a5d2bb68e
+         echo hello
+         var="git diff --compact-summary --name-status -B -M ${COMMITID}^ ${COMMITID}"
+         echo "$var"
+         $var
+         echo hello
+         
       - name: Print-PS-Environment-Variables
         if: ${{ env.DEBUG_STEPS == 'true' }} 
         id: printpsenvironmentvariables
