@@ -41,7 +41,7 @@ env:
   # Logging__LogLevel__Default & DEBUG_STEPS should be repository variables
 jobs:
     Publish-Artifacts-to-Dev-APIM:
-     name: Publish-Artifacts-to-Dev-APIM-From-CommitID-${{ inputs.COMMITID }}
+     name: Publish-Artifacts-to-Dev-APIM-From-Branch-${{ inputs.COMMITID }}
      runs-on: ubuntu-latest
      steps:
       - name: Print-Input-From-Calling-Workflow
