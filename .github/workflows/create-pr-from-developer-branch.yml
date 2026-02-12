@@ -65,11 +65,11 @@ jobs:
       - name: Print-Relevant-Info
         id: print-relevant-info
         run: |
-         echo "Reference number is ${{ inputs.REFERENCE_NUMBER }}"
-         echo "PR base branch is ${{ inputs.BASE_BRANCH_FOR_PR }}"
-         echo "PR head branch is ${{ inputs.HEAD_BRANCH_FOR_PR }}"
-         echo "PR milestone number is ${{ steps.create-or-get-milestone.outputs.number }}"
-         echo "PR milestone name is ${{ steps.create-or-get-milestone.outputs.title }}"
+         echo "reference number is ${{ inputs.REFERENCE_NUMBER }}"
+         echo "pr base branch is ${{ inputs.BASE_BRANCH_FOR_PR }}"
+         echo "pr head branch is ${{ inputs.HEAD_BRANCH_FOR_PR }}"
+         echo "pr milestone number is ${{ steps.create-or-get-milestone.outputs.number }}"
+         echo "pr milestone name is ${{ steps.create-or-get-milestone.outputs.title }}"
       - name: Create-PR-For-Merging-To-Artifacts-Branch
         env:
          GH_TOKEN: ${{ github.token }}
